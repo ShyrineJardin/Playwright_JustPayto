@@ -1,0 +1,36 @@
+import {test, expect} from '@playwright/test';
+
+test.use({
+  permissions: ['geolocation'], // 👈 allow location permission
+});
+
+test('💳 Credit card payment for individual user', async ({page, context, baseURL, browserName, playwright}) => {
+
+    console.log('💻 Complete Credit Card Payment Flow');
+    console.log(`🔗 URL: ${process.env.INDIVIDUAL_PAYMENT_URL}`);
+    await page.goto(process.env.INDIVIDUAL_PAYMENT_URL);
+    await expect(page).toHaveURL(/justpay\.to/);
+    console.log('✅ Payment page loaded successfully');
+
+    // Verify message field validation
+    console.log('💬 Verifying message field validation');
+    console.log('👉 Blank message field should show an error');
+    await page.getByRole('button', {name: 'Send Money'}).click();
+
+    const messageError = (await page.locator('body').innerText()).toLowerCase();
+
+    if (!messageError.includes('message is required')) {
+        throw new Error('❌ Message field validation failed: No error for blank message field');
+    } else {
+        console.log('✅ Message field validation works as expected');
+    }
+
+    // Fill in message field
+    const testMessage = 'CreditCardTest12345';
+    console.log(`💬 Filling in message field with: ${testMessage}`)
+    await page.getByLabel('Message').fill(testMessage);
+
+
+
+
+});
