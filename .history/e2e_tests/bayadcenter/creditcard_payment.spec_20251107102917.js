@@ -1,0 +1,11 @@
+import {test, expect} from '@playwright/test';
+import path from 'path';
+// import { checkEmail, checkMerchantEmail } from '../../../helpers/gmail-helper.js';
+
+test('💳 Creditcard Payment for BayadCenter', async({page, context, baseURL, browserName, playwright})=> {
+    test.setTimeout(120000);
+
+    console.log('💻 Complete creditcard payment flow for bayadcenter');
+    console.log(`🔗 URL: ${process.env.BUSINESS_PAYMENT_URL}`);
+
+})
