@@ -1,0 +1,18 @@
+
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
+
+# Sensitive credential files - NEVER commit these
+playwright_individual_user.json
+playwright_individual_token.json
+playwright_individual_merchant.json
+playwright_individual_merchant_token.json
+.env.local
+.env.production
+
+# Keep .env in repo but mark as template in docs

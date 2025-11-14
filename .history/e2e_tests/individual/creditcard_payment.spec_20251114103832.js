@@ -297,25 +297,25 @@ test('💳 Credit card payment for individual user', async ({page, context, base
     await page.getByText('OK').click();
 
     //payment page contact information for verification
-    console.log('💬 Verifying contact information on payment page');
-
-    await page.getByText('OK').click();
-
-    //checking name message error
-    const nameError = (await page.locator('body').innerText()).toLowerCase();
-    if (!nameError.includes('payer/sender name is required')) {
-        throw new Error('❌ Name error message not displayed');
-    } else {
-        console.log('✅ Name error message displayed as expected');
-    }
-    console.log('📛 Re-enter sender name');
-
-    await page.locator('#your-name').fill(process.env.INDIVIDUAL_USER_NAME);
-    console.log('✅ Sender name filled successfully');
-
-    await page.getByText('OK').click();
+        console.log('💬 Verifying contact information on payment page');
+    
+        await page.getByText('OK').click();
+    
+        //checking name message error
+            const nameError = (await page.locator('body').innerText()).toLowerCase();
+            if (!nameError.includes('payer/sender name is required')) {
+                throw new Error('❌ Name error message not displayed');
+            } else {
+                console.log('✅ Name error message displayed as expected');
+            }
+            console.log('📛 Re-enter sender name');
         
-    // Check if email field is already filled
+            await page.locator('#your-name').fill(process.env.INDIVIDUAL_USER_NAME);
+            console.log('✅ Sender name filled successfully');
+        
+            await page.getByText('OK').click();
+        
+        // Check if email field is already filled
     const emailValue = await page.locator('#your-email').inputValue();
     
     if (!emailValue || emailValue.trim() === '') {
@@ -626,194 +626,6 @@ test('💳 Credit card payment for individual user', async ({page, context, base
                     console.log('✅ OTP submitted successfully and verified');
                 }
             } 
-    
-     // Payment summary verification
-    console.log('💬 Verifying payment summary page');
-
-    await page.getByText('Payment Summary').waitFor({ state: 'visible', timeout: 15000});
-
-    console.log('✅ Payment summary page loaded successfully');
-
-    //verify payment details
-    await expect(page.getByText('CreditCardTest12345')).toBeVisible();
-    console.log('✅ Message Verified');
-
-     console.log('💸 Verifying Payment Amount from the Summary Table');
-    const subTotalRow = page.locator('.MuiTable-root tbody tr', { hasText: 'Sub Total' });
-    const subTotal = await subTotalRow.locator('td').nth(1).innerText();
-    console.log(`✅ Sub Total: ${subTotal}`);
-    expect(subTotal).toContain('100.00');
-
-    // KYC Information verification
-    console.log('🔍 Verifying KYC Information from Summary Table');
-
-    // Name
-    console.log('📛 Checking Name...');
-    const nameRow = page.locator('.MuiTable-root tbody tr', { hasText: 'Your Name' });
-    const name = await nameRow.locator('td').nth(1).innerText();
-    console.log(`✅ Name verified: ${name}`);
-    expect(name.toLowerCase()).toContain(process.env.INDIVIDUAL_USER_NAME.toLowerCase());
-
-    // Email
-    console.log('📧 Checking Email...');
-    const emailRow = page.locator('.MuiTable-root tbody tr', { hasText: 'Your Email' });
-    const email = await emailRow.locator('td').nth(1).innerText();
-    console.log(`✅ Email verified: ${email}`);
-    expect(email.toLowerCase()).toBe(process.env.INDIVIDUAL_USER_EMAIL.toLowerCase());
-
-    // Mobile
-    console.log('📱 Checking Mobile Number...');
-    const mobileRow = page.locator('.MuiTable-root tbody tr', { hasText: 'Your Mobile Number' });
-    const mobile = await mobileRow.locator('td').nth(1).innerText();
-    console.log(`✅ Mobile verified: ${mobile}`);
-    expect(mobile).toContain(process.env.INDIVIDUAL_USER_MOBILE);
-
-    // Address
-    console.log('📍 Checking Address...');
-    const addressExists = await page.locator('.MuiTable-root tbody tr', { hasText: 'Your Address' }).count();
-    if (addressExists > 0) {
-      const addressRow = page.locator('.MuiTable-root tbody tr', { hasText: 'Your Address' });
-      const address = await addressRow.locator('td').nth(1).innerText();
-      console.log(`✅ Address verified: ${address}`);
-      expect(address.toLowerCase()).toContain(process.env.INDIVIDUAL_USER_ADDRESS.toLowerCase());
-    } else {
-      console.log('ℹ️ Address field not found - skipping');
-    }
-
-    // Nationality
-    console.log('🗺️ Checking Nationality...');
-    const nationalityExists = await page.locator('.MuiTable-root tbody tr', { hasText: 'Your Nationality' }).count();
-    if (nationalityExists > 0) {
-      const nationalityRow = page.locator('.MuiTable-root tbody tr', { hasText: 'Your Nationality' });
-      const nationality = await nationalityRow.locator('td').nth(1).innerText();
-      console.log(`✅ Nationality verified: ${nationality}`);
-      expect(nationality.toLowerCase()).toContain(process.env.INDIVIDUAL_USER_NATIONALITY.toLowerCase());
-    } else {
-      console.log('ℹ️ Nationality field not found - skipping');
-    }
-
-    // Date of Birth
-    console.log('📅 Checking Date of Birth...');
-    const dobExists = await page.locator('.MuiTable-root tbody tr', { hasText: 'Your Date of Birth' }).count();
-    if (dobExists > 0) {
-      const dobRow = page.locator('.MuiTable-root tbody tr', { hasText: 'Your Date of Birth' });
-      const dob = await dobRow.locator('td').nth(1).innerText();
-      console.log(`✅ Date of Birth verified: ${dob}`);
-
-      const actualDob = dob.replace(/\D/g, ''); // removes all non-digits
-      const expectedDob = (process.env.INDIVIDUAL_USER_BIRTHDATE ?? '').replace(/\D/g, '');
-
-      expect(actualDob).toContain(expectedDob);
-    } else {
-      console.log('ℹ️ Date of Birth field not found - skipping');
-    }
-
-    // Place of Birth
-    console.log('🚼 Checking Place of Birth...');
-    const pobExists = await page.locator('.MuiTable-root tbody tr', { hasText: 'Your Place of Birth' }).count();
-    if (pobExists > 0) {
-      const pobRow = page.locator('.MuiTable-root tbody tr', { hasText: 'Your Place of Birth' });
-      const pob = await pobRow.locator('td').nth(1).innerText();
-      console.log(`✅ Place of Birth verified: ${pob}`);
-      expect(pob.toLowerCase()).toContain(process.env.INDIVIDUAL_USER_BIRTHPLACE.toLowerCase());
-    } else {
-      console.log('ℹ️ Place of Birth field not found - skipping');
-    }
-
-    // Payment Method
-    console.log('💳 Checking Payment Method...');
-    const paymentRow = page.locator('.MuiTable-root tbody tr', { hasText: 'Payment Method' });
-    const paymentMethod = await paymentRow.locator('td').nth(1).innerText();
-    console.log(`✅ Payment Method verified: ${paymentMethod}`);
-    expect(paymentMethod).toContain('Credit Card');
-
-    // IP Address
-    console.log('🌐 Verifying IP Address Information');
-    const ipText = await page.locator('.MuiTypography-h6', { hasText: 'your current IP address' }).locator('span').innerText();
-    const cleanedIP = ipText.replace(/[()]/g, '').trim();
-    console.log(`✅ IP Address logged: ${cleanedIP}`);
-    expect(cleanedIP).toMatch(/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/);
-
-    console.log('🎉 All Payment Summary validations passed successfully');
-    console.log('✅ Payment Summary Validation Complete');
-
-    // scroll to button
-    const confirmButton = page.locator('button', { hasText: 'Confirm' }).first();
-    await confirmButton.click();
-
-    console.log('🔃 Processing Transaction')
-    
-    console.log('⏳ Waiting for transaction to process (20 seconds)...');
-    await page.waitForTimeout(30000); // wait for 30 seconds for processing
-
-    console.log('🔎 Checking Transaction Status')
-    await page.waitForTimeout(2000);
-    const successMessage = await page.locator('body').innerText();
-
-    if (!successMessage.toLowerCase().includes('transaction successful')) {
-        throw new Error('❌ Payment not successful - Success message not found');
-    } else {
-        console.log('✅ Payment completed successfully - Success message verified');
-    }
-
-    await page.screenshot({ path: `banktransfer_individual_${browserName}.png`, fullPage: true });
-
-    await page.locator('button', { hasText: 'Ok' }).click();
-    console.log('🎉 Donation Bank Transfer Payment Flow Test Completed Successfully');
-
-    const testTriggerTime1 = Date.now();
-    const searchTime1 = new Date(testTriggerTime1 - 30 * 1000);
-
-    const testTriggerTime2 = Date.now();
-    const searchTime2 = new Date(testTriggerTime2 - 30 * 1000);
-
-    //email verification for user
-    console.log('📧 Verifying payment confirmation email for individual user');
-
-    console.log('📬 Waiting for confirmation email for payer...');
-
-    await page.waitForTimeout(2000); // short delay before checking
-
-    const payerEmail = await checkEmail({
-    from: 'hello@justpay.to',
-    to: process.env.INDIVIDUAL_USER_EMAIL,
-    subject: 'You are sending',
-    wait_time_sec: 30,
-    max_wait_time_sec: 180,
-    after: searchTime1.toISOString(),
-    });
-
-    if (!payerEmail) {
-    throw new Error(`❌ No confirmation email received for payer: ${process.env.INDIVIDUAL_USER_EMAIL}`);
-    }
-
-    console.log('✅ Payer confirmation email received.');
-    console.log(`📧 To: ${process.env.INDIVIDUAL_USER_EMAIL}`);
-    console.log(`🕒 Received at: ${payerEmail.date || 'unknown'}`);
-
-    // --- EMAIL VERIFICATION FOR MERCHANT (You are receiving) ---
-    console.log('📬 Waiting for confirmation email for merchant...');
-
-    await page.waitForTimeout(2000); // slight pause before checking merchant inbox
-
-    const merchantEmail = await checkMerchantEmail({
-    from: 'hello@justpay.to',
-    to: process.env.INDIVIDUAL_MERCHANT_EMAIL,
-    subject: 'You are receiving',
-    wait_time_sec: 30,
-    max_wait_time_sec: 180,
-    after: searchTime2.toISOString(),
-    });
-
-    if (!merchantEmail) {
-    throw new Error(`❌ No confirmation email received for merchant: ${process.env.INDIVIDUAL_MERCHANT_EMAIL}`);
-    }
-
-    console.log('✅ Merchant confirmation email received.');
-    console.log(`📧 To: ${process.env.INDIVIDUAL_MERCHANT_EMAIL}`);
-    console.log(`🕒 Received at: ${merchantEmail.date || 'unknown'}`);
-
-    // --- FINAL VALIDATION ---
-    console.log('🎉 Email verification for both payer and merchant completed successfully!');
+        
     
 });

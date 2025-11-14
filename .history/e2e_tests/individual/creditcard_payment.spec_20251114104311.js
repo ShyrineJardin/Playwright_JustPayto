@@ -302,20 +302,20 @@ test('💳 Credit card payment for individual user', async ({page, context, base
     await page.getByText('OK').click();
 
     //checking name message error
-    const nameError = (await page.locator('body').innerText()).toLowerCase();
-    if (!nameError.includes('payer/sender name is required')) {
-        throw new Error('❌ Name error message not displayed');
-    } else {
-        console.log('✅ Name error message displayed as expected');
-    }
-    console.log('📛 Re-enter sender name');
-
-    await page.locator('#your-name').fill(process.env.INDIVIDUAL_USER_NAME);
-    console.log('✅ Sender name filled successfully');
-
-    await page.getByText('OK').click();
+            const nameError = (await page.locator('body').innerText()).toLowerCase();
+            if (!nameError.includes('payer/sender name is required')) {
+                throw new Error('❌ Name error message not displayed');
+            } else {
+                console.log('✅ Name error message displayed as expected');
+            }
+            console.log('📛 Re-enter sender name');
         
-    // Check if email field is already filled
+            await page.locator('#your-name').fill(process.env.INDIVIDUAL_USER_NAME);
+            console.log('✅ Sender name filled successfully');
+        
+            await page.getByText('OK').click();
+        
+        // Check if email field is already filled
     const emailValue = await page.locator('#your-email').inputValue();
     
     if (!emailValue || emailValue.trim() === '') {

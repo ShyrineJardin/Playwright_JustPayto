@@ -315,7 +315,7 @@ test('💳 Credit card payment for individual user', async ({page, context, base
 
     await page.getByText('OK').click();
         
-    // Check if email field is already filled
+        // Check if email field is already filled
     const emailValue = await page.locator('#your-email').inputValue();
     
     if (!emailValue || emailValue.trim() === '') {

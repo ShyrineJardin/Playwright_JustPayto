@@ -319,25 +319,25 @@ test('💳 Credit card payment for individual user', async ({page, context, base
     const emailValue = await page.locator('#your-email').inputValue();
     
     if (!emailValue || emailValue.trim() === '') {
-        console.log('📧 Email field is empty, proceeding with validation...');
-        
-        // Click to trigger email error
-        await page.getByText('OK').click();
-        
-        //checking email message error
-        const emailError = (await page.locator('body').innerText()).toLowerCase();
-        if (!emailError.includes('payer/sender email is required')) {
-            throw new Error('❌ Email error message not displayed');
-        } else {
-            console.log('✅ Email error message displayed as expected');
-        }
+    console.log('📧 Email field is empty, proceeding with validation...');
     
-        //filling in email
-        console.log('📧 Filling in sender email');
-        await page.locator('#your-email').fill(process.env.INDIVIDUAL_USER_EMAIL);
-        console.log('✅ Sender email filled successfully');
-        
-        await page.getByText('OK').click();
+    // Click to trigger email error
+    await page.getByText('OK').click();
+    
+    //checking email message error
+    const emailError = (await page.locator('body').innerText()).toLowerCase();
+    if (!emailError.includes('payer/sender email is required')) {
+        throw new Error('❌ Email error message not displayed');
+    } else {
+        console.log('✅ Email error message displayed as expected');
+    }
+
+    //filling in email
+    console.log('📧 Filling in sender email');
+    await page.locator('#your-email').fill(process.env.INDIVIDUAL_USER_EMAIL);
+    console.log('✅ Sender email filled successfully');
+    
+    await page.getByText('OK').click();
     } else {
         console.log('✅ Email field already filled, skipping email validation');
     }

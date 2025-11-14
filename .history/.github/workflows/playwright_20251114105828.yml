@@ -1,0 +1,59 @@
+name: Playwright Tests
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: lts/*
+    - name: Install dependencies
+      run: npm ci
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps
+    - name: Run Playwright tests
+      run: npx playwright test
+      env:
+        BASE_URL: ${{ secrets.BASE_URL }}
+        LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
+        LOGIN_USERNAME: ${{ secrets.LOGIN_USERNAME }}
+        LOGIN_PASSWORD: ${{ secrets.LOGIN_PASSWORD }}
+        API_URL: ${{ secrets.API_URL }}
+        INDIVIDUAL_PAYMENT_URL: ${{ secrets.INDIVIDUAL_PAYMENT_URL }}
+        INDIVIDUAL_USER_NAME: ${{ secrets.INDIVIDUAL_USER_NAME }}
+        INDIVIDUAL_USER_EMAIL: ${{ secrets.INDIVIDUAL_USER_EMAIL }}
+        INDIVIDUAL_USER_MOBILE: ${{ secrets.INDIVIDUAL_USER_MOBILE }}
+        INDIVIDUAL_USER_ADDRESS: ${{ secrets.INDIVIDUAL_USER_ADDRESS }}
+        INDIVIDUAL_USER_NATIONALITY: ${{ secrets.INDIVIDUAL_USER_NATIONALITY }}
+        INDIVIDUAL_USER_BIRTHDATE: ${{ secrets.INDIVIDUAL_USER_BIRTHDATE }}
+        INDIVIDUAL_USER_BIRTHPLACE: ${{ secrets.INDIVIDUAL_USER_BIRTHPLACE }}
+        INDIVIDUAL_CARD_NUMBER: ${{ secrets.INDIVIDUAL_CARD_NUMBER }}
+        INDIVIDUAL_CARD_EXP: ${{ secrets.INDIVIDUAL_CARD_EXP }}
+        INDIVIDUAL_CARD_CVV: ${{ secrets.INDIVIDUAL_CARD_CVV }}
+        INDIVIDUAL_CARD_STREETLINE_1: ${{ secrets.INDIVIDUAL_CARD_STREETLINE_1 }}
+        INDIVIDUAL_CARD_STREETLINE_2: ${{ secrets.INDIVIDUAL_CARD_STREETLINE_2 }}
+        INDIVIDUAL_CARD_PROVINCE: ${{ secrets.INDIVIDUAL_CARD_PROVINCE }}
+        INDIVIDUAL_CARD_POSTAL: ${{ secrets.INDIVIDUAL_CARD_POSTAL }}
+        INDIVIDUAL_MERCHANT_EMAIL: ${{ secrets.INDIVIDUAL_MERCHANT_EMAIL }}
+        BUSINESS_PAYMENT_URL: ${{ secrets.BUSINESS_PAYMENT_URL }}
+        BUSINESS_USER_NAME: ${{ secrets.BUSINESS_USER_NAME }}
+        BUSINESS_USER_EMAIL: ${{ secrets.BUSINESS_USER_EMAIL }}
+        BUSINESS_USER_MOBILE: ${{ secrets.BUSINESS_USER_MOBILE }}
+        BUSINESS_USER_DELIVERY_ADDRESS: ${{ secrets.BUSINESS_USER_DELIVERY_ADDRESS }}
+        BUSINESS_MERCHANT_EMAIL: ${{ secrets.BUSINESS_MERCHANT_EMAIL }}
+        BAYADCENTER_PAYMENT_URL: ${{ secrets.BAYADCENTER_PAYMENT_URL }}
+        GAWADKALINGA_PAYMENT_URL: ${{ secrets.GAWADKALINGA_PAYMENT_URL }}
+        AUTOSWEEP_PAYMENT_URL: ${{ secrets.AUTOSWEEP_PAYMENT_URL }}
+        AUTOSWEEP_PLATE_NUMBER: ${{ secrets.AUTOSWEEP_PLATE_NUMBER }}
+    - uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
+      with:
+        name: playwright-report
+        path: playwright-report/
+        retention-days: 30
