@@ -2,10 +2,10 @@ import {test, expect} from '@playwright/test';
 import path from 'path';
 import { checkEmail, checkMerchantEmail } from '../../../helpers/gmail-helper.js';
 
-test('🏦 Credit card payment for business user', async ({page, context, baseURL, browserName, playwright}) => {
+test('🏦 Credit card payment for business user - pickup', async ({page, context, baseURL, browserName, playwright}) => {
     test.setTimeout(120000);
 
-    console.log('💻 Complete Credit Card Payment Flow for business');
+    console.log('💻 Complete Credit Card Payment Flow for business - pickup');
     console.log(`🔗 URL: ${process.env.BUSINESS_PAYMENT_URL}`);
 
     await page.goto(process.env.BUSINESS_PAYMENT_URL);
@@ -37,9 +37,9 @@ test('🏦 Credit card payment for business user', async ({page, context, baseUR
     } else {
         console.log('✅ Message field validation works as expected');
     }
-    
+
     // Fill in message field
-    const testMessage = 'CreditCardBusinessTest12345';
+    const testMessage = 'CreditCardBusinessTestPickUp12345';
 
     console.log(`💬 Filling in message field with: ${testMessage}`)
     await page.locator('#message-order-items-ref').fill(testMessage);
@@ -276,7 +276,7 @@ test('🏦 Credit card payment for business user', async ({page, context, baseUR
 
     await page.getByRole('button', {name: 'Pay Now'}).click();
 
-      // Checking for amount error message
+       // Checking for amount error message
     console.log('💬 Checking for amount error message');
     const amountError = (await page.locator('body').innerText()).toLowerCase();
 
@@ -337,10 +337,40 @@ test('🏦 Credit card payment for business user', async ({page, context, baseUR
     
     await page.getByRole('button', {name: 'Pay Now'}).click();
 
-    // choosing regular payment
-    console.log('⏳ Choosing regular payment option');
+    // choosing pickup
+    console.log('⏳ Choosing pick-up option');
+    await page.getByLabel('For Pick-up').check();
     await page.locator('button:has-text("OK")').click();
-    console.log('✅ Regular payment option selected');
+    console.log('✅ Pick-up option selected');
+
+     // for pick-up additional info
+    //time error validation
+    await page.locator('button:has-text("OK")').click();
+    console.log('💬 Checking for time error message');
+    const timeError = (await page.locator('body').innerText()).toLowerCase();
+
+    if (!timeError.includes('pick-up time is required')) {
+        throw new Error('❌ Pick-up error message not displayed');
+    } else {
+        console.log('✅ Pick-up error message displayed as expected');
+    }
+
+    console.log('🕒 Setting pick-up time window');
+
+    // Fill start time
+    const startTime = '09:00';
+    await page.locator('input[name="pickupStartTime"]').fill(startTime);
+    console.log(`✅ Pick-up start time set to: ${startTime}`);
+
+    // Fill end time
+    const endTime = '17:00';
+    await page.locator('input[name="pickupEndTime"]').fill(endTime);
+    console.log(`✅ Pick-up end time set to: ${endTime}`);
+
+    // Verify values
+    await expect(page.locator('input[name="pickupStartTime"]')).toHaveValue(startTime);
+    await expect(page.locator('input[name="pickupEndTime"]')).toHaveValue(endTime);
+    console.log('✅ Pick-up time range validated successfully');
 
     // mobile number error validation
     console.log('💬 Verifying mobile number field validation');
@@ -368,7 +398,7 @@ test('🏦 Credit card payment for business user', async ({page, context, baseUR
     console.log('✅ Payment summary page loaded successfully');
 
     //verify payment details
-    await expect(page.getByText('CreditCardBusinessTest12345')).toBeVisible();
+    await expect(page.getByText('CreditCardBusinessTestPickUp12345')).toBeVisible();
     console.log('✅ Message Verified');
 
     console.log('💸 Verifying Payment Amount from the Summary Table');
@@ -406,6 +436,19 @@ test('🏦 Credit card payment for business user', async ({page, context, baseUR
     const paymentMethod = await paymentRow.locator('td').nth(1).innerText();
     console.log(`✅ Payment Method verified: ${paymentMethod}`);
     expect(paymentMethod).toContain('Credit Card');
+
+    // Pick-up time
+    console.log('🕒 Checking Pick-up Time...');
+    const pickupTimeCell = page.locator('td.fulfillment-detail', { hasText: 'Time of Pick-up' });
+    const pickupTimeText = await pickupTimeCell.innerText();
+    console.log(`✅ Pick-up time verified: ${pickupTimeText}`);
+    
+    // Extract just the time range (remove the label)
+    const timeRange = pickupTimeText.split('\n')[1]; 
+    console.log(`🕐 Time range: ${timeRange}`);
+    expect(timeRange).toMatch(/\d{2}:\d{2}\s*-\s*\d{2}:\d{2}/); // Validates format HH:MM - HH:MM
+    expect(timeRange).toContain('09:00');
+    expect(timeRange).toContain('17:00');
 
     // IP Address
     console.log('🌐 Verifying IP Address Information');
@@ -493,4 +536,7 @@ test('🏦 Credit card payment for business user', async ({page, context, baseUR
     console.log(`🕒 Received at: ${merchantEmail.date || 'unknown'}`);
 
     console.log('🎉 Email verification for both payer and merchant completed successfully!');
+
+
+
 });

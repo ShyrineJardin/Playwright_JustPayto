@@ -2,15 +2,15 @@ import {test, expect} from '@playwright/test';
 import path from 'path';
 import { checkEmail, checkMerchantEmail } from '../../../helpers/gmail-helper.js';
 
-test('🏦 Credit card payment for business user', async ({page, context, baseURL, browserName, playwright}) => {
+test('🏦 Credit card payment for business user - delivery', async ({page, context, baseURL, browserName, playwright}) => {
     test.setTimeout(120000);
-
-    console.log('💻 Complete Credit Card Payment Flow for business');
+    
+    console.log('💻 Complete Credit Card Payment Flow for business - delivery');
     console.log(`🔗 URL: ${process.env.BUSINESS_PAYMENT_URL}`);
 
     await page.goto(process.env.BUSINESS_PAYMENT_URL);
     await expect(page).toHaveURL(/justpay\.to/);
-       
+
     // Check if the page actually loaded with content
     const payNowButton = page.locator('button:has-text("I want to pay")');
     const isButtonVisible = await payNowButton.isVisible({timeout: 30000}).catch(() => false);
@@ -37,10 +37,11 @@ test('🏦 Credit card payment for business user', async ({page, context, baseUR
     } else {
         console.log('✅ Message field validation works as expected');
     }
-    
-    // Fill in message field
-    const testMessage = 'CreditCardBusinessTest12345';
 
+    // Fill in message field
+    const testMessage = 'CreditCardBusinessTestDelivery12345';
+
+    
     console.log(`💬 Filling in message field with: ${testMessage}`)
     await page.locator('#message-order-items-ref').fill(testMessage);
     console.log('✅ Message field filled successfully');
@@ -276,7 +277,7 @@ test('🏦 Credit card payment for business user', async ({page, context, baseUR
 
     await page.getByRole('button', {name: 'Pay Now'}).click();
 
-      // Checking for amount error message
+       // Checking for amount error message
     console.log('💬 Checking for amount error message');
     const amountError = (await page.locator('body').innerText()).toLowerCase();
 
@@ -337,10 +338,28 @@ test('🏦 Credit card payment for business user', async ({page, context, baseUR
     
     await page.getByRole('button', {name: 'Pay Now'}).click();
 
-    // choosing regular payment
-    console.log('⏳ Choosing regular payment option');
+    // choosing delivery
+    console.log('⏳ Choosing delivery option');
+    await page.getByLabel('For Delivery').check();
     await page.locator('button:has-text("OK")').click();
-    console.log('✅ Regular payment option selected');
+    console.log('✅ Delivery option selected');
+
+    //for delivery additional info
+    //address error validation
+    await page.locator('button:has-text("OK")').click();
+    console.log('💬 Checking for address error message');
+    const addressError = (await page.locator('body').innerText()).toLowerCase();
+
+    if (!addressError.includes('delivery shipping address is required')) {
+        throw new Error('❌ Delivery shipping address error message not displayed');
+    } else {
+        console.log('✅ Delivery shipping address message displayed as expected');
+    }
+
+    console.log('🏘️ Filling in delivery address');
+     await page.locator('#your-delivery-shipping-address').fill(process.env.BUSINESS_USER_DELIVERY_ADDRESS);
+    console.log('✅ Delivery Address field filled successfully');
+    await page.locator('button:has-text("OK")').click();
 
     // mobile number error validation
     console.log('💬 Verifying mobile number field validation');
@@ -354,13 +373,40 @@ test('🏦 Credit card payment for business user', async ({page, context, baseUR
         console.log('✅ Mobile number field validation works as expected');
     }
 
-    //FILL in mobile number field
+    // Fill in mobile number field
     console.log(`💬 Filling in mobile number field`)
     await page.locator('#your-mobile-number').fill(process.env.BUSINESS_USER_MOBILE);
     console.log('✅ Mobile number field filled successfully');
     await page.locator('button:has-text("OK")').click();
 
-     // Payment summary verification
+    // Verifying delivery address
+    console.log('📍 Checking delivery address in map');
+    
+    // Wait for the "For Delivery" section to be visible
+    await page.locator('h5:has-text("For Delivery")').waitFor({ state: 'visible', timeout: 10000 });
+    console.log('✅ "For Delivery" section loaded');
+    
+    // Verify Google Maps is loaded
+    const googleMapContainer = page.locator('#google-maps-container');
+    await expect(googleMapContainer).toBeVisible();
+    console.log('✅ Google Maps container is visible');
+    
+    // Verify the map has loaded (check for Google Maps elements)
+    const mapElement = page.locator('[aria-label="Map"]');
+    await expect(mapElement).toBeVisible();
+    console.log('✅ Google Maps loaded successfully');
+    
+    // Verify the marker/pin is present on the map
+    const mapPin = page.locator('img[src*="spotlight-poi"]').or(page.locator('[title*="map pin"]'));
+    await expect(mapPin).toBeVisible({ timeout: 5000 });
+    console.log('✅ Location marker is visible on the map');
+    
+    // Click OK button to proceed
+    console.log('👆 Clicking OK button to confirm delivery location');
+    await page.locator('button:has-text("OK")').click();
+    console.log('✅ Delivery location confirmed');
+
+    // Payment summary verification
     console.log('💬 Verifying payment summary page');
 
     await page.getByText('Payment Summary').waitFor({ state: 'visible', timeout: 60000 });
@@ -368,8 +414,8 @@ test('🏦 Credit card payment for business user', async ({page, context, baseUR
     console.log('✅ Payment summary page loaded successfully');
 
     //verify payment details
-    await expect(page.getByText('CreditCardBusinessTest12345')).toBeVisible();
-    console.log('✅ Message Verified');
+    await expect(page.getByText('CreditCardBusinessDeliveryTest12345')).toBeVisible();
+    console.log('✅ Message Verified'); 
 
     console.log('💸 Verifying Payment Amount from the Summary Table');
     const subTotalRow = page.locator('.MuiTable-root tbody tr', { hasText: 'Sub Total' });
@@ -405,7 +451,14 @@ test('🏦 Credit card payment for business user', async ({page, context, baseUR
     const paymentRow = page.locator('.MuiTable-root tbody tr', { hasText: 'Payment Method' });
     const paymentMethod = await paymentRow.locator('td').nth(1).innerText();
     console.log(`✅ Payment Method verified: ${paymentMethod}`);
-    expect(paymentMethod).toContain('Credit Card');
+    expect(paymentMethod).toContain('Bank of the Philippine Islands');
+
+    // delivery address
+    console.log('🏘️ Checking Delivery Address...');
+    const addressRow = page.locator('.MuiTable-root tbody tr', { hasText: 'Your Delivery Shipping Address' });
+    const address = await mobileRow.locator('td').nth(1).innerText();
+    console.log(`✅ Delivery Address verified: ${address}`);
+    expect(address).toContain(process.env.BUSINESS_USER_DELIVERY_ADDRESS);
 
     // IP Address
     console.log('🌐 Verifying IP Address Information');
@@ -423,7 +476,7 @@ test('🏦 Credit card payment for business user', async ({page, context, baseUR
 
     console.log('🔃 Processing Transaction')
 
-    console.log('⏳ Waiting for transaction to process (20 seconds)...');
+        console.log('⏳ Waiting for transaction to process (20 seconds)...');
     await page.waitForTimeout(30000); // wait for 30 seconds for processing
 
     console.log('🔎 Checking Transaction Status')
@@ -436,39 +489,32 @@ test('🏦 Credit card payment for business user', async ({page, context, baseUR
         console.log('✅ Payment completed successfully - Success message verified');
     }
 
-    await page.screenshot({ path: `banktransfer_individual_${browserName}.png`, fullPage: true });
-
+    // Calculate search time RIGHT BEFORE closing success dialog
+    const testTriggerTime = Date.now();
+    const searchTime = new Date(testTriggerTime - 120 * 1000); // Look back 2 minutes
+    
     await page.locator('button', { hasText: 'Ok' }).click();
-    console.log('🎉 Donation Bank Transfer Payment Flow Test Completed Successfully');
+    console.log('🎉 Credit Card Transfer Payment Flow Test Completed Successfully');
 
-    const testTriggerTime1 = Date.now();
-    const searchTime1 = new Date(testTriggerTime1 - 30 * 1000);
-
-    const testTriggerTime2 = Date.now();
-    const searchTime2 = new Date(testTriggerTime2 - 30 * 1000);
-
-    //email verification for user
-    console.log('📧 Verifying payment confirmation email for individual user');
-
+    // Email verification for user
+    console.log('📧 Verifying payment confirmation email for business user');
     console.log('📬 Waiting for confirmation email for payer...');
 
-    await page.waitForTimeout(2000); // short delay before checking
-
     const payerEmail = await checkEmail({
-    from: 'hello@justpay.to',
-    to: process.env.INDIVIDUAL_USER_EMAIL,
-    subject: 'Your payment of',
-    wait_time_sec: 30,
-    max_wait_time_sec: 180,
-    after: searchTime1.toISOString(),
+        from: 'hello@justpay.to',
+        to: process.env.BUSINESS_USER_EMAIL,
+        subject: 'Your payment of',
+        wait_time_sec: 30, // Check every 30 seconds
+        max_wait_time_sec: 180, // Wait up to 3 minutes
+        after: searchTime.toISOString(),
     });
 
     if (!payerEmail) {
-    throw new Error(`❌ No confirmation email received for payer: ${process.env.INDIVIDUAL_USER_EMAIL}`);
+        throw new Error(`❌ No confirmation email received for payer: ${process.env.BUSINESS_USER_EMAIL}`);
     }
 
     console.log('✅ Payer confirmation email received.');
-    console.log(`📧 To: ${process.env.INDIVIDUAL_USER_EMAIL}`);
+    console.log(`📧 To: ${process.env.BUSINESS_USER_EMAIL}`);
     console.log(`🕒 Received at: ${payerEmail.date || 'unknown'}`);
 
     // Email verification for merchant
@@ -493,4 +539,7 @@ test('🏦 Credit card payment for business user', async ({page, context, baseUR
     console.log(`🕒 Received at: ${merchantEmail.date || 'unknown'}`);
 
     console.log('🎉 Email verification for both payer and merchant completed successfully!');
-});
+
+       
+
+})

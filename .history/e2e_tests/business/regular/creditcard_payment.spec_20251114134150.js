@@ -492,5 +492,5 @@ test('🏦 Credit card payment for business user', async ({page, context, baseUR
     console.log(`📧 To: ${process.env.BUSINESS_MERCHANT_EMAIL}`);
     console.log(`🕒 Received at: ${merchantEmail.date || 'unknown'}`);
 
-    console.log('🎉 Email verification for both payer and merchant completed successfully!');
+    console.log('🎉 Email ver
 });

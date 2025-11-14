@@ -457,7 +457,7 @@ test('🏦 Credit card payment for business user', async ({page, context, baseUR
     const payerEmail = await checkEmail({
     from: 'hello@justpay.to',
     to: process.env.INDIVIDUAL_USER_EMAIL,
-    subject: 'Your payment of',
+    subject: 'You are donating',
     wait_time_sec: 30,
     max_wait_time_sec: 180,
     after: searchTime1.toISOString(),
@@ -471,26 +471,31 @@ test('🏦 Credit card payment for business user', async ({page, context, baseUR
     console.log(`📧 To: ${process.env.INDIVIDUAL_USER_EMAIL}`);
     console.log(`🕒 Received at: ${payerEmail.date || 'unknown'}`);
 
-    // Email verification for merchant
+    // --- EMAIL VERIFICATION FOR MERCHANT (You are receiving) ---
     console.log('📬 Waiting for confirmation email for merchant...');
+
     await page.waitForTimeout(2000); // slight pause before checking merchant inbox
 
     const merchantEmail = await checkMerchantEmail({
-        from: 'hello@justpay.to',
-        to: process.env.BUSINESS_MERCHANT_EMAIL,
-        subject: process.env.BUSINESS_USER_NAME + ' paid you',
-        wait_time_sec: 30, // Check every 30 seconds
-        max_wait_time_sec: 180, // Wait up to 3 minutes
-        after: searchTime.toISOString(),
+    from: 'hello@justpay.to',
+    to: process.env.INDIVIDUAL_MERCHANT_EMAIL,
+    subject: 'You are receiving',
+    wait_time_sec: 30,
+    max_wait_time_sec: 180,
+    after: searchTime2.toISOString(),
     });
 
     if (!merchantEmail) {
-        throw new Error(`❌ No confirmation email received for merchant: ${process.env.BUSINESS_MERCHANT_EMAIL}`);
+    throw new Error(`❌ No confirmation email received for merchant: ${process.env.INDIVIDUAL_MERCHANT_EMAIL}`);
     }
 
     console.log('✅ Merchant confirmation email received.');
-    console.log(`📧 To: ${process.env.BUSINESS_MERCHANT_EMAIL}`);
+    console.log(`📧 To: ${process.env.INDIVIDUAL_MERCHANT_EMAIL}`);
     console.log(`🕒 Received at: ${merchantEmail.date || 'unknown'}`);
 
+    // --- FINAL VALIDATION ---
     console.log('🎉 Email verification for both payer and merchant completed successfully!');
+
+
+
 });
