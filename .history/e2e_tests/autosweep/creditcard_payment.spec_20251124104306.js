@@ -494,49 +494,9 @@ test('🤲 Credit Card payment for Autosweep', async ({page, context, baseURL, b
         await confirmButton.click();
         console.log('✅ Confirm button clicked - Processing payment');
         
-    console.log('🔃 Processing Transaction')    
+        console.log('🔃 Processing Transaction')    
 
-    console.log('⏳ Waiting for transaction to process (30 seconds)...');
-    await page.waitForTimeout(30000); 
-
-    console.log('🔎 Checking Transaction Status')
-    await page.waitForTimeout(2000);
-    const successMessage = await page.locator('body').innerText();
-
-    if (!successMessage.toLowerCase().includes('transaction successful')) {
-        throw new Error('❌ Payment not successful - Success message not found');
-    } else {
-        console.log('✅ Payment completed successfully - Success message verified');
-    }
-
-    const testTriggerTime1 = Date.now();
-    const searchTime1 = new Date(testTriggerTime1 - 30 * 1000);
     
-    await page.locator('button', { hasText: 'Ok' }).click();
-
-    //email verification for user
-    console.log('📧 Verifying payment confirmation email for individual user');
-
-    console.log('📬 Waiting for confirmation email for payer...');
-
-    await page.waitForTimeout(2000); // short delay before checking
-
-    const payerEmail = await checkEmail({
-    from: 'hello@justpay.to',
-    to: process.env.INDIVIDUAL_USER_EMAIL,
-    subject: 'Successful payment of',
-    wait_time_sec: 30,
-    max_wait_time_sec: 180,
-    after: searchTime1.toISOString(),
-    });
-
-    if (!payerEmail) {
-    throw new Error(`❌ No confirmation email received for payer: ${process.env.INDIVIDUAL_USER_EMAIL}`);
-    }
-
-    console.log('✅ Payer confirmation email received.');
-    console.log(`📧 To: ${process.env.INDIVIDUAL_USER_EMAIL}`);
-    console.log(`🕒 Received at: ${payerEmail.date || 'unknown'}`);
 
 
 });

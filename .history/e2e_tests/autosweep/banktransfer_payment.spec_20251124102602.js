@@ -157,29 +157,20 @@
         console.log('✅ T&C accepted');
 
         // Wait for any loading state to complete
-        console.log('⏳ Waiting for Load button to become enabled...');
+console.log('⏳ Waiting for Load button to become enabled...');
+const loadButton = page.locator('button:has-text("Load PHP")');
 
-        // Locate the button
-        const loadButton = page.locator('button[type="submit"]:has-text("Load PHP")');
+// Wait for the disabled attribute to be removed
+await loadButton.waitFor({ state: 'visible', timeout: 10000 });
 
-        // Wait for it to be visible
-        await loadButton.waitFor({ state: 'visible', timeout: 10000 });
+// Wait for it to be enabled (not disabled)
+await page.waitForFunction(() => {
+    const btn = document.querySelector('button[type="submit"]:has-text("Load PHP")');
+    return btn && !btn.disabled;
+}, { timeout: 30000 });
 
-        // Wait for loading spinner to disappear (if exists)
-        const loadingSpinner = page.locator('button:has-text("Load PHP") span.loading');
-        const hasSpinner = await loadingSpinner.count() > 0;
-
-        if (hasSpinner) {
-            console.log('⏳ Waiting for loading spinner to disappear...');
-            await loadingSpinner.waitFor({ state: 'hidden', timeout: 30000 });
-        }
-
-        // Wait for button to be enabled
-        await expect(loadButton).toBeEnabled({ timeout: 30000 });
-
-        console.log('✅ Button is now enabled, clicking...');
-        await loadButton.click();
-        console.log('✅ Load button clicked successfully');
+console.log('✅ Button is now enabled');
+await loadButton.click();
 
         console.log('🔍 Verifying plate number in readonly display field...');
         // const readonlyField = page.locator('input[aria-invalid="false"][readonly][type="text"].MuiInputBase-input.MuiOutlinedInput-input.MuiInputBase-inputAdornedStart.MuiOutlinedInput-inputAdornedStart');
