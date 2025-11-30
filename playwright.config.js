@@ -29,6 +29,7 @@ const tokenPathMerchant = path.resolve(__dirname, 'playwright_individual_merchan
  */
 export default defineConfig({
   testDir: './e2e_tests',
+  testMatch: '**/*.spec.js',
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -104,36 +105,64 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
+    // Desktop Browsers
     {
-      name: 'chromium',
+      name: 'chromium-desktop',
       use: { ...devices['Desktop Chrome'] },
     },
 
     {
-      name: 'firefox',
+      name: 'firefox-desktop',
       use: { ...devices['Desktop Firefox'] },
     },
 
     {
-      name: 'webkit',
+      name: 'webkit-desktop',
       use: { ...devices['Desktop Safari'] },
     },
 
-    /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
+    // Mobile Devices
+    {
+      name: 'iphone-12',
+      use: { ...devices['iPhone 12'] },
+    },
+
+    {
+      name: 'iphone-se',
+      use: { ...devices['iPhone SE'] },
+    },
+
+    {
+      name: 'pixel-5',
+      use: { ...devices['Pixel 5'] },
+    },
+
+    {
+      name: 'galaxy-s9-plus',
+      use: { ...devices['Galaxy S9+'] },
+    },
+
+    // Tablet Devices
+    {
+      name: 'ipad-pro',
+      use: { ...devices['iPad Pro'] },
+    },
+
+    {
+      name: 'ipad-air',
+      use: { ...devices['iPad Air'] },
+    },
+
+    {
+      name: 'pixel-tablet',
+      use: { ...devices['Pixel Tablet'] },
+    },
 
     /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    // },
+    {
+      name: 'msedge-desktop',
+      use: { ...devices['Desktop Edge'], channel: 'msedge' },
+    },
     // {
     //   name: 'Google Chrome',
     //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },

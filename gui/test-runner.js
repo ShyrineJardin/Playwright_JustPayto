@@ -16,10 +16,22 @@ app.use(express.json());
 
 let currentTestRun = null;
 
-// Get all available tests
+// Get all available tests from all test directories
 app.get('/api/tests', (req, res) => {
-  const testDir = path.join(__dirname, '..', 'e2e_tests');
+  const testType = req.query.type || 'e2e'; // Default to e2e
+  const typeMap = {
+    'e2e': 'e2e_tests',
+    'integration': 'intergration_tests',
+    'unit': 'unit_tests'
+  };
+  
+  const testDir = path.join(__dirname, '..', typeMap[testType]);
   const tests = [];
+
+  // Check if directory exists
+  if (!fs.existsSync(testDir)) {
+    return res.json([]);
+  }
 
   function walkDir(dir, prefix = '') {
     const files = fs.readdirSync(dir);
@@ -31,12 +43,13 @@ app.get('/api/tests', (req, res) => {
       if (stat.isDirectory()) {
         walkDir(fullPath, prefix ? `${prefix}/${file}` : file);
       } else if (file.endsWith('.spec.js')) {
-        // Store relative path from e2e_tests directory
+        // Store relative path from test directory
         const relativePath = path.relative(testDir, fullPath).replace(/\\/g, '/');
         tests.push({
           name: prefix ? `${prefix}/${file.replace('.spec.js', '')}` : file.replace('.spec.js', ''),
-          path: `e2e_tests/${relativePath}`,
-          displayName: file.replace('.spec.js', '')
+          path: `${typeMap[testType]}/${relativePath}`,
+          displayName: file.replace('.spec.js', ''),
+          type: testType
         });
       }
     });
@@ -48,7 +61,7 @@ app.get('/api/tests', (req, res) => {
 
 // Run a specific test
 app.post('/api/run-test', (req, res) => {
-  const { testPath, browser = 'chromium', headed = true } = req.body;
+  const { testPath, browser = 'chromium-desktop', device = 'desktop', headed = true } = req.body;
 
   if (currentTestRun) {
     return res.json({ 
@@ -84,7 +97,8 @@ app.post('/api/run-test', (req, res) => {
     output: '',
     startTime: new Date(),
     testFile: cleanPath,
-    headed: headed
+    headed: headed,
+    device: device
   };
 
   // Capture output from both stdout and stderr
@@ -167,8 +181,8 @@ app.listen(PORT, () => {
   console.log(`╔════════════════════════════════════════╗`);
   console.log(`║   Playwright Test Runner GUI Ready!    ║`);
   console.log(`║                                        ║`);
-  console.log(`║   🌐 Open your browser:               ║`);
-  console.log(`║   http://localhost:${PORT}                   ║`);
+  console.log(`║   🌐 Open your browser:                ║`);
+  console.log(`║   http://localhost:${PORT}                ║`);
   console.log(`║                                        ║`);
   console.log(`║   Close this window to stop server     ║`);
   console.log(`╚════════════════════════════════════════╝`);

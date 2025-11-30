@@ -385,6 +385,36 @@
         .tab-content.active {
             display: block;
         }
+
+        .test-type-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .test-type-btn {
+            flex: 1;
+            padding: 10px 12px;
+            background: #ecf0f1;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+            color: #555;
+        }
+
+        .test-type-btn:hover {
+            background: #dce3e8;
+            border-color: #bbb;
+        }
+
+        .test-type-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
     </style>
 </head>
 <body>
@@ -398,6 +428,19 @@
             <!-- Left: Test Selection -->
             <div class="card">
                 <h2>📋 Available Tests</h2>
+                
+                <div class="test-type-tabs" style="margin-bottom: 15px; display: flex; gap: 8px;">
+                    <button class="test-type-btn active" onclick="switchTestType('e2e')">
+                        🧪 E2E Tests
+                    </button>
+                    <button class="test-type-btn" onclick="switchTestType('integration')">
+                        🔗 Integration Tests
+                    </button>
+                    <button class="test-type-btn" onclick="switchTestType('unit')">
+                        ⚙️ Unit Tests
+                    </button>
+                </div>
+
                 <div class="test-list scrollbar" id="testList">
                     <div class="empty-state">
                         <div class="empty-state-icon">⏳</div>
@@ -422,11 +465,25 @@
 
                 <div class="controls">
                     <label>
-                        🌐 Browser
-                        <select id="browserSelect">
-                            <option value="chromium">Chromium (Chrome)</option>
-                            <option value="firefox">Firefox</option>
-                            <option value="webkit">WebKit (Safari)</option>
+                        🌐 Device
+                        <select id="deviceSelect">
+                            <optgroup label="Desktop Browsers">
+                                <option value="chromium-desktop">Chromium (Chrome)</option>
+                                <option value="firefox-desktop">Firefox</option>
+                                <option value="webkit-desktop">WebKit (Safari)</option>
+                                <option value="msedge-desktop">Microsoft Edge</option>
+                            </optgroup>
+                            <optgroup label="Mobile Devices">
+                                <option value="iphone-12">iPhone 12</option>
+                                <option value="iphone-se">iPhone SE</option>
+                                <option value="pixel-5">Google Pixel 5</option>
+                                <option value="galaxy-s9-plus">Samsung Galaxy S9+</option>
+                            </optgroup>
+                            <optgroup label="Tablet Devices">
+                                <option value="ipad-pro">iPad Pro</option>
+                                <option value="ipad-air">iPad Air</option>
+                                <option value="pixel-tablet">Google Pixel Tablet</option>
+                            </optgroup>
                         </select>
                     </label>
 
@@ -481,7 +538,7 @@
                             <strong>Select a Test:</strong> Click on any test in the list to select it
                         </li>
                         <li style="margin-bottom: 10px;">
-                            <strong>Choose Browser:</strong> Select Chromium, Firefox, or WebKit
+                            <strong>Choose Device:</strong> Select from desktop browsers (Chrome, Firefox, Safari, Edge), mobile devices (iPhone, Pixel), or tablets (iPad, Pixel Tablet)
                         </li>
                         <li style="margin-bottom: 10px;">
                             <strong>Display Mode:</strong> Choose "Headed" to see the browser run, or "Headless" to run quietly
@@ -497,11 +554,40 @@
                         </li>
                     </ol>
 
+                    <h3 style="margin: 20px 0 15px;">📱 Available Devices</h3>
+                    <div style="background: #f9f9f9; padding: 12px; border-radius: 4px; margin-bottom: 15px;">
+                        <p style="margin-bottom: 10px;"><strong>🖥️ Desktop Browsers:</strong></p>
+                        <ul style="margin-left: 20px; color: #555; margin-bottom: 12px;">
+                            <li>Chromium (Chrome) - Desktop resolution (1280x720)</li>
+                            <li>Firefox - Desktop resolution</li>
+                            <li>WebKit (Safari) - Desktop resolution</li>
+                            <li>Microsoft Edge - Desktop resolution</li>
+                        </ul>
+
+                        <p style="margin-bottom: 10px;"><strong>📱 Mobile Devices:</strong></p>
+                        <ul style="margin-left: 20px; color: #555; margin-bottom: 12px;">
+                            <li>iPhone 12 - 390x844 (portrait)</li>
+                            <li>iPhone SE - 375x667</li>
+                            <li>Google Pixel 5 - 393x851</li>
+                            <li>Samsung Galaxy S9+ - 414x846</li>
+                        </ul>
+
+                        <p style="margin-bottom: 10px;"><strong>📱 Tablet Devices:</strong></p>
+                        <ul style="margin-left: 20px; color: #555;">
+                            <li>iPad Pro - 1024x1366</li>
+                            <li>iPad Air - 820x1180</li>
+                            <li>Google Pixel Tablet - 1280x800</li>
+                        </ul>
+                    </div>
+
                     <h3 style="margin: 20px 0 15px;">📌 Tips</h3>
                     <ul style="margin-left: 20px; color: #555;">
-                        <li><strong>Headed mode:</strong> Great for debugging - you'll see the browser in action</li>
+                        <li><strong>Mobile Testing:</strong> Test on actual mobile device sizes to catch responsive design issues</li>
+                        <li><strong>Tablet Testing:</strong> Verify your app works on tablet viewports between mobile and desktop</li>
+                        <li><strong>Headed mode:</strong> Great for debugging - you'll see the browser/device in action</li>
                         <li><strong>Headless mode:</strong> Faster - good for quick test runs</li>
-                        <li><strong>Chromium:</strong> Recommended - fastest and most compatible</li>
+                        <li><strong>Chromium Desktop:</strong> Recommended for initial testing - fastest and most compatible</li>
+                        <li><strong>Multi-device runs:</strong> Run the same test on different devices to ensure cross-platform compatibility</li>
                         <li><strong>Can't click Run?</strong> Make sure you've selected a test first</li>
                     </ul>
 
@@ -545,17 +631,31 @@
         }
 
         let selectedTest = null;
+        let currentTestType = 'e2e';
+
+        // Switch between test types
+        function switchTestType(type) {
+            currentTestType = type;
+            document.querySelectorAll('.test-type-btn').forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            
+            selectedTest = null;
+            document.getElementById('selectedTestInfo').style.display = 'none';
+            document.getElementById('runButton').disabled = true;
+            
+            loadTests();
+        }
 
         // Load tests on page load
         async function loadTests() {
             try {
-                const response = await fetch('/api/tests');
+                const response = await fetch(`/api/tests?type=${currentTestType}`);
                 const tests = await response.json();
 
                 const testList = document.getElementById('testList');
                 
                 if (tests.length === 0) {
-                    testList.innerHTML = '<div class="empty-state"><div class="empty-state-icon">❌</div><p>No tests found</p></div>';
+                    testList.innerHTML = '<div class="empty-state"><div class="empty-state-icon">ℹ️</div><p>No tests found for this category</p></div>';
                     return;
                 }
 
@@ -629,7 +729,7 @@
                 return;
             }
 
-            const browser = document.getElementById('browserSelect').value;
+            const device = document.getElementById('deviceSelect').value;
             const headed = document.getElementById('headedSelect').value === 'true';
 
             try {
@@ -637,14 +737,15 @@
                 document.getElementById('stopButton').style.display = 'flex';
                 document.getElementById('outputBox').textContent = '⏳ Starting test...\n';
                 
-                updateStatus('running', `Running: ${selectedTest.name}`);
+                updateStatus('running', `Running: ${selectedTest.name} on ${device}`);
 
                 const response = await fetch('/api/run-test', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         testPath: selectedTest.path,
-                        browser,
+                        browser: device,
+                        device: device,
                         headed
                     })
                 });

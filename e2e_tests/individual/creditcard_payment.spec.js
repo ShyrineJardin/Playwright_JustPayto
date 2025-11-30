@@ -21,7 +21,7 @@ test('💳 Credit card payment for individual user', async ({page, context, base
     const isButtonVisible = await page.locator('button:has-text("Send Money")')
         .waitFor({state: 'visible', timeout: 60000})
         .then(() => true)
-        .catch(() => false); 
+        .catch(() => false);                                                                                                                             
     
     if (!isButtonVisible) {
         console.error('❌ FAILED: Individual Payment page did not load properly - may be down or loading slowly');
