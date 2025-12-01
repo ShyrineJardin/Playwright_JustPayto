@@ -486,15 +486,19 @@ Navigate to Gmail API Credentials
 
 #### 3.2 Create OAuth 2.0 Client
 1. Click `Create Credentials` → `OAuth client ID`
+<img width="1999" height="436" alt="image3" src="https://github.com/user-attachments/assets/c0eab16a-5aae-4932-8418-52ece9995ce2" />
 
 2. Select `Desktop App` as Application type
+<img width="1999" height="618" alt="image5" src="https://github.com/user-attachments/assets/eb3b2cec-f575-4a6d-bbc0-6d6dfbb6b9c0" />
 
 3. Enter a descriptive name (e.g., "Individual Merchant Email")
+<img width="1999" height="662" alt="image2" src="https://github.com/user-attachments/assets/e60089a5-c692-446a-9c17-f477a0594ce2" />
 
 4. Click `Create`
 
 #### 3.3 Download Credentials
 1. Download the JSON file from the credentials dialog
+<img width="1999" height="1019" alt="image6" src="https://github.com/user-attachments/assets/f840a46f-9e47-4d94-ba52-bff6e500d92c" />
 
 2. Click `OK` to close the dialog
 
@@ -523,9 +527,11 @@ Parameters:
 #### 4.1 Authorize Application
 1. A browser window will open
 2. Select the Gmail account that matches your configuration
-3. Click `Continue` through the authorization prompts
-4. Grant the necessary permissions
-5. After authorization, the token file will be created in your project root
+<img width="1999" height="997" alt="image4" src="https://github.com/user-attachments/assets/0c168716-c55e-488a-a868-e99d257bdf36" />
+
+4. Click `Continue` through the authorization prompts
+5. Grant the necessary permissions
+6. After authorization, the token file will be created in your project root
 
 ### Step 5: Configure Task
 
