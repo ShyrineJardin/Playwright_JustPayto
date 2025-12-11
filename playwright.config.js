@@ -28,8 +28,9 @@ const tokenPathMerchant = path.resolve(__dirname, 'playwright_individual_merchan
  * @see https://playwright.dev/docs/test-configuration
  */
 export default defineConfig({
-  testDir: './e2e_tests',
-  testMatch: '**/*.spec.js',
+  // Allow tests in multiple folders so e2e, integration and unit tests are discoverable
+  testDir: '.',
+  testMatch: ['**/e2e_tests/**/*.spec.js', '**/intergration_tests/**/*.spec.js', '**/unit_tests/**/*.spec.js'],
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */

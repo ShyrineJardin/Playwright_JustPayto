@@ -47,7 +47,6 @@ test('🏦 Bank Transfer payment for individual user', async ({page, context, ba
     } else {
         console.log('✅ Message field validation works as expected');
     }
-
     // Fill in message field
     const testMessage = 'BankTransferTest12345';
     console.log(`💬 Filling in message field with: ${testMessage}`)
