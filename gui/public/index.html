@@ -774,8 +774,15 @@
                 const response = await fetch('/api/test-status');
                 const data = await response.json();
 
-                document.getElementById('outputBox').textContent = data.output || '⏳ Test in progress...';
-                document.getElementById('outputBox').scrollTop = document.getElementById('outputBox').scrollHeight;
+                const outputBox = document.getElementById('outputBox');
+                const wasAtBottom = outputBox.scrollTop + outputBox.clientHeight >= outputBox.scrollHeight - 10; // small threshold
+
+                outputBox.textContent = data.output || '⏳ Test in progress...';
+
+                // Only auto-scroll to bottom if user was already there
+                if (wasAtBottom) {
+                    outputBox.scrollTop = outputBox.scrollHeight;
+                }
 
                 const status = data.status === 'running' ? 'running' : (data.exitCode === 0 ? 'success' : 'error');
                 const statusText = `${selectedTest.name} - ${data.duration}`;
@@ -788,9 +795,17 @@
                     document.getElementById('stopButton').style.display = 'none';
                     
                     if (data.exitCode === 0) {
-                        document.getElementById('outputBox').textContent += '\n\n✅ TEST PASSED!';
+                        outputBox.textContent += '\n\n✅ TEST PASSED!';
+                        // Scroll to bottom on completion if user was there
+                        if (wasAtBottom) {
+                            outputBox.scrollTop = outputBox.scrollHeight;
+                        }
                     } else {
-                        document.getElementById('outputBox').textContent += `\n\n❌ TEST FAILED (Exit code: ${data.exitCode})`;
+                        outputBox.textContent += `\n\n❌ TEST FAILED (Exit code: ${data.exitCode})`;
+                        // Scroll to bottom on completion if user was there
+                        if (wasAtBottom) {
+                            outputBox.scrollTop = outputBox.scrollHeight;
+                        }
                     }
                 }
             } catch (error) {

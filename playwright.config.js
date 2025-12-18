@@ -32,7 +32,7 @@ export default defineConfig({
   testDir: '.',
   testMatch: ['**/e2e_tests/**/*.spec.js', '**/intergration_tests/**/*.spec.js', '**/unit_tests/**/*.spec.js'],
   /* Run tests in files in parallel */
-  fullyParallel: true,
+  fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
