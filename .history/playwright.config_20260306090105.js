@@ -1,0 +1,168 @@
+import { defineConfig, devices } from '@playwright/test';
+import dotenv from 'dotenv';
+import path from 'path';
+
+dotenv.config();
+
+// path for individual user credentials and token
+const credentialPathUser = path.resolve(__dirname, 'playwright_individual_user.json');
+const tokenPathUser = path.resolve(__dirname, 'playwright_individual_token.json');
+
+//path for individual merchant credentials and token
+const credentialPathMerchant = path.resolve(__dirname, 'playwright_individual_merchant.json');
+const tokenPathMerchant = path.resolve(__dirname, 'playwright_individual_merchant_token.json');
+
+// ZAP proxy configuration - injected by GUI when ZAP toggle is enabled
+const zapEnabled = process.env.ZAP_ENABLED === 'true';
+const zapHost = process.env.ZAP_HOST || 'localhost';
+const zapPort = process.env.ZAP_PORT || '8080';
+const zapProxy = zapEnabled ? { server: `http://${zapHost}:${zapPort}` } : undefined;
+
+/**
+ * @see https://playwright.dev/docs/test-configuration
+ */
+export default defineConfig({
+  testDir: '.',
+  testMatch: ['**/e2e_tests/**/*.spec.js', '**/intergration_tests/**/*.spec.js', '**/unit_tests/**/*.spec.js'],
+  fullyParallel: false,
+  /* Fail the build on CI if you accidentally left test.only in the source code. */
+  forbidOnly: !!process.env.CI,
+  /* Retry on CI only */
+  retries: process.env.CI ? 2 : 0,
+  /* Opt out of parallel tests on CI. */
+  workers: process.env.CI ? 1 : undefined,
+  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
+  reporter: 'html',
+  /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
+  use: {
+    permissions: ['geolocation'],
+
+    // ZAP proxy - only active when ZAP_ENABLED=true is set by the GUI
+    ...(zapProxy && { proxy: zapProxy }),
+
+    // When ZAP is enabled, we need to ignore HTTPS errors since ZAP uses its own certificate
+    ...(zapEnabled && { ignoreHTTPSErrors: true }),
+
+    baseUrl: process.env.BASE_URL,
+    loginEmail: process.env.LOGIN_EMAIL,
+    loginUsername: process.env.LOGIN_USERNAME,
+    loginPassword: process.env.LOGIN_PASSWORD,
+
+    //merchant email
+    INDIVIDUAL_MERCHANT_EMAIL: process.env.INDIVIDUAL_MERCHANT_EMAIL,
+
+    //business url
+    BUSINESS_PAYMENT_URL: process.env.BUSINESS_PAYMENT_URL,
+
+    //bayadcenter url
+    BAYADCENTER_PAYMENT_URL: process.env.BAYADCENTER_PAYMENT_URL,
+
+    //donation url
+    GAWADKALINGA_PAYMENT_URL: process.env.GAWADKALINGA_PAYMENT_URL,
+
+    //autosweep url
+    AUTOSWEEP_PAYMENT_URL: process.env.AUTOSWEEP_PAYMENT_URL,
+
+    //meralco url
+    MERALCO_PAYMENT_URL: process.env.MERALCO_PAYMENT_URL,
+
+    //user info
+    INDIVIDUAL_USER_NAME: process.env.INDIVIDUAL_USER_NAME,
+    INDIVIDUAL_USER_EMAIL: process.env.INDIVIDUAL_USER_EMAIL,
+    INDIVIDUAL_USER_MOBILE: process.env.INDIVIDUAL_USER_MOBILE,
+    INDIVIDUAL_USER_ADDRESS: process.env.INDIVIDUAL_USER_ADDRESS,
+    INDIVIDUAL_USER_NATIONALITY: process.env.INDIVIDUAL_USER_NATIONALITY,
+    INDIVIDUAL_USER_BIRTHDATE: process.env.INDIVIDUAL_USER_BIRTHDATE,
+    INDIVIDUAL_USER_BIRTHPLACE: process.env.INDIVIDUAL_USER_BIRTHPLACE,
+
+    // individual payment link
+    INDIVIDUAL_PAYMENT_URL: process.env.INDIVIDUAL_PAYMENT_URL,
+    INDIVIDUAL_CARD_NUMBER: process.env.INDIVIDUAL_CARD_NUMBER,
+    INDIVIDUAL_CARD_EXP: process.env.INDIVIDUAL_CARD_EXP,
+    INDIVIDUAL_CARD_CVV: process.env.INDIVIDUAL_CARD_CVV,
+    INDIVIDUAL_CARD_STREETLINE_1: process.env.INDIVIDUAL_CARD_STREETLINE_1,
+    INDIVIDUAL_CARD_STREETLINE_2: process.env.INDIVIDUAL_CARD_STREETLINE_2,
+    INDIVIDUAL_CARD_PROVINCE: process.env.INDIVIDUAL_CARD_PROVINCE,
+    INDIVIDUAL_CARD_POSTAL: process.env.INDIVIDUAL_CARD_POSTAL,
+
+    // business user info
+    BUSINESS_USER_NAME: process.env.BUSINESS_USER_NAME,
+    BUSINESS_USER_EMAIL: process.env.BUSINESS_USER_EMAIL,
+    BUSINESS_MERCHANT_EMAIL: process.env.BUSINESS_MERCHANT_EMAIL,
+    BUSINESS_USER_MOBILE: process.env.BUSINESS_USER_MOBILE,
+    BUSINESS_USER_DELIVERY_ADDRESS: process.env.BUSINESS_USER_DELIVERY_ADDRESS,
+
+    // autosweep plate no
+    AUTOSWEEP_PLATE_NUMBER: process.env.AUTOSWEEP_PLATE_NUMBER,
+
+    // meralco info
+    MERALCO_ACCOUNT_NUMBER: process.env.MERALCO_ACCOUNT_NUMBER,
+
+    trace: 'on-first-retry',
+
+    /* Record video on failed tests for debugging */
+    video: 'retain-on-failure',
+  },
+
+  /* Configure projects for major browsers */
+  projects: [
+    // Desktop Browsers
+    {
+      name: 'chromium-desktop',
+      use: { ...devices['Desktop Chrome'] },
+    },
+
+    {
+      name: 'firefox-desktop',
+      use: { ...devices['Desktop Firefox'] },
+    },
+
+    {
+      name: 'webkit-desktop',
+      use: { ...devices['Desktop Safari'] },
+    },
+
+    // Mobile Devices
+    {
+      name: 'iphone-12',
+      use: { ...devices['iPhone 12'] },
+    },
+
+    {
+      name: 'iphone-se',
+      use: { ...devices['iPhone SE'] },
+    },
+
+    {
+      name: 'pixel-5',
+      use: { ...devices['Pixel 5'] },
+    },
+
+    {
+      name: 'galaxy-s9-plus',
+      use: { ...devices['Galaxy S9+'] },
+    },
+
+    // Tablet Devices
+    {
+      name: 'ipad-pro',
+      use: { ...devices['iPad Pro'] },
+    },
+
+    {
+      name: 'ipad-air',
+      use: { ...devices['iPad Air'] },
+    },
+
+    {
+      name: 'pixel-tablet',
+      use: { ...devices['Pixel Tablet'] },
+    },
+
+    /* Test against branded browsers. */
+    {
+      name: 'msedge-desktop',
+      use: { ...devices['Desktop Edge'], channel: 'msedge' },
+    },
+  ],
+});
