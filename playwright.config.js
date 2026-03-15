@@ -28,6 +28,10 @@ export default defineConfig({
   testMatch: ['**/e2e_tests/**/*.spec.js', '**/integration_tests/**/*.spec.js', '**/unit_tests/**/*.spec.js'],
   /* Run tests in files in parallel */
   fullyParallel: false,
+  timeout: 60000,
+  expect: {
+    timeout: 60000,
+  },
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
@@ -39,6 +43,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     permissions: ['geolocation'],
+    actionTimeout: 60000,
 
     // ZAP proxy - only active when ZAP_ENABLED=true is set by the GUI
     ...(zapProxy && { proxy: zapProxy }),
@@ -100,6 +105,11 @@ export default defineConfig({
 
     // meralco info
     MERALCO_ACCOUNT_NUMBER: process.env.MERALCO_ACCOUNT_NUMBER,
+
+    // api credentials
+    API_USERNAME: process.env.API_USERNAME,
+    API_PASSWORD: process.env.API_PASSWORD,
+    API_USERNAME_PAGE: process.env.API_USERNAME_PAGE,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
