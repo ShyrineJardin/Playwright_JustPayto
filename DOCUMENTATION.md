@@ -1,4 +1,4 @@
-# 📚 Playwright JustPayTo - Complete Documentation
+# 📚 Playwright Payment Testing Framework - Complete Documentation
 
 > **All guides in one place!** This document covers setup, QA usage, and implementation details.
 
@@ -10,10 +10,9 @@
 2. [For Non-Technical QA](#-for-non-technical-qa)
 3. [For New Developers](#-for-new-developers)
 4. [Gmail API Setup Guide](#-gmail-api-setup-guide-for-email-testing)
-5. [Zapier Integration Guide](#-zapier-integration-guide-for-automated-workflows)
-6. [ZAP Security Testing Guide](#-zap-security-testing-guide)
-7. [For System Implementation](#-for-system-implementation)
-8. [Troubleshooting](#-troubleshooting)
+5. [ZAP Security Testing Guide](#-zap-security-testing-guide)
+6. [For System Implementation](#-for-system-implementation)
+7. [Troubleshooting](#-troubleshooting)
 
 ---
 
@@ -46,63 +45,37 @@ npx playwright test
 
 ### Step 1: Start the Dashboard
 1. Open **Windows Explorer** (File Manager)
-2. Navigate to: `/path/to/your/repository`
+2. Navigate to the project folder
 3. Find and **double-click**: `RUN_TEST_SUITE.bat`
 4. Wait for browser to open automatically
-5. You'll see a beautiful dashboard 🎨
+5. You'll see the test dashboard 🎨
 
-### Step 2: Run a Test
+### Step 2: Choose Your Test Type
+Use the tabs at the top of the test list:
+- **🧪 E2E Tests** — Full browser payment flow tests (most comprehensive)
+- **🔗 Integration Tests** — API-level tests
+- **⚙️ Unit Tests** — Isolated logic tests per payment category
+
+### Step 3: Run a Test
 1. **Select a test** from the left list (click to highlight)
-2. **Choose browser**: Leave as "Chromium" (fastest)
-3. **Choose display mode**: 
+2. **Choose device**: Leave as "Chromium" for desktop, or pick a mobile/tablet device
+3. **Choose display mode**:
    - "Headed (Show Browser)" = Watch the test run ✅ Best for learning
    - "Headless (Hidden)" = Run quietly in background ✅ Faster
-4. **Click** "▶️ Run Test"
-5. **Watch the magic happen!** ✨
+4. **ZAP Security Scan** (optional): Toggle ON if you want security scanning — make sure ZAP is open first
+5. **Click** "▶️ Run Test"
 
-### Step 3: Check Results
+### Step 4: Check Results
 - Look for **✅ TEST PASSED!** or **❌ TEST FAILED** in the output
 - Green checkmark = Success! 🎉
 - Red X = Something went wrong (check error message)
 
 ---
 
-## 🎯 Example: Your First Test Run
-
-### Scenario: Testing Individual Credit Card Payment
-
-1. **Start Dashboard**
-   - Double-click `RUN_TEST_SUITE.bat`
-   - Wait for browser to open at `http://localhost:3000`
-
-2. **Select Test**
-   - In left panel, find: `individual`
-   - Click on: `creditcard_payment`
-   - It highlights in blue ✅
-
-3. **Configure**
-   - Browser: Leave as "Chromium" ✓
-   - Display: Select "Headed (Show Browser)" (so you can watch!)
-   - Click "▶️ Run Test"
-
-4. **Watch It Run** (3-5 minutes)
-   - Browser window opens
-   - Form fields auto-fill with test data
-   - Test clicks "Pay Now" buttons
-   - Validates payment succeeded
-   - Checks confirmation emails
-
-5. **Check Result**
-   - Look at output for **✅ TEST PASSED!** or **❌ TEST FAILED**
-   - If passed: Great! ✨
-   - If failed: Check error message for what went wrong
-
----
-
 ## ❓ Common Questions & Answers
 
 ### Q: The browser won't open
-**A:** 
+**A:**
 1. Check the command window - it should say "Test Runner started"
 2. Wait 10 seconds (it's starting the server)
 3. Manually open browser and go to: `http://localhost:3000`
@@ -119,33 +92,25 @@ npx playwright test
 **A:** No, but you can run them one after another:
 1. Wait for first test to finish (check for ✅ or ❌)
 2. Click "Clear Output" to clean the screen
-3. Select a different test
-4. Click "Run Test" again
+3. Select a different test and click "Run Test" again
 
 ### Q: How do I stop a running test?
-**A:** 
+**A:**
 1. Click the **"⏹️ Stop Test"** button
 2. Test stops immediately
-3. You can then run another test
 
-### Q: Can I see test results in more detail?
-**A:** Yes! After test runs:
-1. Check the output panel for pass/fail message
-2. Click "Help & Tips" tab for more information
-3. Ask your admin to show you the `playwright-report` folder (detailed HTML reports)
-
-### Q: What if I make a mistake selecting a test?
-**A:** No problem!
-1. Just select a different test from the left panel
-2. Click "Run Test" to run the new one
-3. The previous test is abandoned
+### Q: What is ZAP and should I enable it?
+**A:** ZAP is a security scanning tool. When enabled, it watches all the network traffic during a test and flags any security issues it finds.
+- Enable it when you want a security check alongside your regular test
+- Make sure ZAP application is open on your computer before enabling
+- ZAP is **not available** for Unit Tests (it's automatically disabled)
+- After the test, open ZAP and check the Alerts tab for findings
 
 ### Q: What credentials do I need?
-**A:** None! Tests use predefined test data:
+**A:** None! Tests use predefined test data configured by the IT team:
 - Test email addresses
-- Test credit cards (that don't actually charge)
+- Test payment methods (that don't actually charge)
 - Test merchant accounts
-- All configured by the IT team ✅
 
 ---
 
@@ -155,25 +120,22 @@ npx playwright test
 - Tests run ~20% faster in "Headless (Hidden)" mode
 - Use "Headed (Show Browser)" only when debugging
 
-### Tip 2: Focus on One Test Category
-- Run all "individual" tests to verify individual payments
-- Then run all "business" tests
-- Organize your testing by category
+### Tip 2: Run ZAP Scans Before Release
+- Enable ZAP toggle for E2E tests before major releases
+- Check ZAP Alerts tab after each run
+- Generate an HTML report to share with developers
 
-### Tip 3: Note Failed Tests
-- When a test fails, note the error message
-- Report it to the developer with the exact error
-- The output panel has all the info developers need
+### Tip 3: Use the Right Test Type
+- **Unit Tests** — fast, isolated, good for quick sanity checks
+- **Integration Tests** — verify APIs are working correctly
+- **E2E Tests** — full flow validation including email confirmation
 
 ### Tip 4: Test During Off-Peak Hours
 - Tests are faster when website load is low
 - Avoid testing right after website deployments
-- Run tests when you have time to wait (4-6 min per test)
 
 ### Tip 5: Desktop Shortcut
-- Run `CREATE_DESKTOP_SHORTCUT.bat` once
-- Get a shortcut on your desktop
-- Double-click it anytime to start testing (faster than finding the file!)
+- Run `CREATE_DESKTOP_SHORTCUT.bat` once to get a shortcut on your desktop
 
 ---
 
@@ -183,27 +145,22 @@ npx playwright test
 
 ### 1. Node.js (Required)
 - **Download**: https://nodejs.org/ (LTS version)
-- **Verify**: Open PowerShell and run:
+- **Verify**:
   ```powershell
   node --version
   npm --version
   ```
-- You should see version numbers, not "command not found"
 
 ### 2. Git (Required)
 - **Download**: https://git-scm.com/
-- **Verify**: Open PowerShell and run:
+- **Verify**:
   ```powershell
   git --version
   ```
 
 ### 3. Visual Studio Code (Recommended)
 - **Download**: https://code.visualstudio.com/
-- **Install**: "Playwright Test" extension
-  1. Open VS Code
-  2. Click Extensions icon (left sidebar)
-  3. Search: "Playwright Test"
-  4. Click "Install"
+- Install the **Playwright Test** extension from the Extensions panel
 
 ---
 
@@ -212,45 +169,28 @@ npx playwright test
 ### Step 1: Clone the Repository
 
 ```powershell
-# Open PowerShell and navigate to where you want the project
-cd C:\Users\YourUsername\Documents
-
-# Clone the repository
-git clone https://github.com/ShyrineJardin/Playwright_JustPayto.git
-
-# Navigate into project
-cd Playwright_JustPayto
+git clone https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
+cd YOUR_REPO_NAME
 ```
 
 ### Step 2: Install Dependencies
 
 ```powershell
-# Install npm packages
 npm install
-
-# Install Playwright browsers (first run takes 5-10 minutes)
 npx playwright install --with-deps
 ```
 
-This installs:
-- ✅ Playwright testing framework
-- ✅ Express.js (GUI server)
-- ✅ Helpers and utilities
-- ✅ Browser binaries (Chrome, Firefox, Safari)
-
 ### Step 3: Setup Environment Variables
 
-Create a file named `.env` in the project root:
-
-**Ask your team lead for the `.env` file**
+```powershell
+cp .env.example .env
+# Fill in the values — ask your team lead for credentials
+```
 
 ### Step 4: Verify Setup
 
 ```powershell
-# Test that everything works
 npx playwright test --help
-
-# You should see Playwright help information
 ```
 
 ---
@@ -259,22 +199,28 @@ npx playwright test --help
 
 ### Method 1: GUI Dashboard (Recommended for QA)
 ```powershell
-# Windows - use batch file
+# Windows
 RUN_TEST_SUITE.bat
 
-# Mac/Linux - use node directly
+# Mac/Linux
 node gui/test-runner.js
 
 # Then open: http://localhost:3000
 ```
 
-### Method 2: Command Line (For Developers)
+### Method 2: Command Line
 
 ```powershell
-# Run all tests
-npx playwright test
+# Run all E2E tests
+npx playwright test e2e_tests/
 
-# Run specific test file
+# Run all unit tests
+npx playwright test unit_tests/
+
+# Run integration tests
+npx playwright test integration_tests/
+
+# Run specific file
 npx playwright test e2e_tests/individual/creditcard_payment.spec.js
 
 # Run with specific browser
@@ -282,75 +228,62 @@ npx playwright test --project=chromium
 npx playwright test --project=firefox
 npx playwright test --project=webkit
 
-# Run in headed mode (see browser)
+# Run in headed mode
 npx playwright test --headed
 
-# Run in debug mode (interactive debugging)
+# Debug mode
 npx playwright test --debug
 ```
 
-### Method 3: VS Code (Best for Development)
-
-1. Open VS Code in the project folder
-2. Open any test file: `e2e_tests/individual/creditcard_payment.spec.js`
-3. Look for green play buttons ▶️ next to test names
-4. Click the play button to run that specific test
-5. Or use command palette: `Ctrl+Shift+P` → "Playwright: Run test"
+### Method 3: VS Code
+Click the ▶️ play buttons next to test names in any `.spec.js` file.
 
 ---
 
 ## View Test Reports
 
-After tests run:
-
 ```powershell
-# Open HTML test report
 npx playwright show-report
 ```
 
-Report shows:
-- ✅/❌ Test results
-- 📸 Screenshots
-- 🎥 Video recordings
-- 📝 Detailed logs
-- ⏱️ Timing information
+Reports include: ✅/❌ results, 📸 screenshots, 🎥 video recordings, 📝 detailed logs, ⏱️ timing.
 
 ---
 
 ## Project Structure
 
 ```
-Playwright_JustPayto/
-├── e2e_tests/                    # All test files
-│   ├── individual/               # Individual payment tests
-│   │   ├── creditcard_payment.spec.js
-│   │   ├── banktransfer_payment.spec.js
-│   │   ├── ewallet_payment.spec.js
-│   │   └── onlinebank_payment.spec.js
-│   ├── business/                 # Business tests
-│   │   ├── delivery/
-│   │   ├── regular/
-│   │   └── pick-up/
-│   ├── donation/                 # Donation tests
-│   ├── bayadcenter/              # BayadCenter tests
-│   ├── autosweep/                # AutoSweep RFID tests
-│   └── example.spec.js           # Example test
-├── gui/                          # GUI Dashboard
-│   ├── test-runner.js            # Express.js server (backend)
-│   └── public/
-│       └── index.html            # Web dashboard (frontend)
-├── helpers/                      # Helper functions
-│   └── gmail-helper.js           # Email verification helpers
-├── fixtures/                     # Test data/fixtures
-├── playwright-report/            # Test reports (auto-generated)
-├── test-results/                 # Test artifacts (auto-generated)
-├── .env                          # Environment variables (CREATE THIS)
-├── .gitignore                    # Git ignore file
-├── playwright.config.js          # Playwright configuration
-├── package.json                  # NPM dependencies
-├── DOCUMENTATION.md              # This file
-├── RUN_TEST_SUITE.bat           # Windows batch launcher
-└── CREATE_DESKTOP_SHORTCUT.bat  # Desktop shortcut creator
+├── e2e_tests/                    # Full browser payment flow tests
+│   ├── individual/
+│   ├── business/
+│   ├── donation/
+│   ├── bayadcenter/
+│   ├── autosweep/
+│   └── meralco/
+├── integration_tests/            # API integration tests
+│   └── api/
+├── unit_tests/                   # Isolated unit tests per category
+│   ├── autosweep_payment.spec.js
+│   ├── bayadcenter_payment.spec.js
+│   ├── business_payment.spec.js
+│   ├── donation_payment.spec.js
+│   ├── individual_payment.spec.js
+│   └── meralco_payment.spec.js
+├── gui/
+│   ├── test-runner.js
+│   └── public/index.html
+├── helpers/
+│   └── gmail-helper.js
+├── fixtures/
+├── playwright-report/
+├── test-results/
+├── .env
+├── .gitignore
+├── playwright.config.js
+├── package.json
+├── DOCUMENTATION.md
+├── RUN_TEST_SUITE.bat
+└── CREATE_DESKTOP_SHORTCUT.bat
 ```
 
 ---
@@ -359,15 +292,15 @@ Playwright_JustPayto/
 
 ### Workflow 1: Writing a New Test
 ```powershell
-# 1. Create test file
+# 1. Create test file in the appropriate folder
 # e2e_tests/mycategory/mytest.spec.js
 
 # 2. Use Playwright Inspector to generate selectors
-npx playwright codegen https://dev.justpay.to
+npx playwright codegen https://your-target-url.com
 
 # 3. Write test logic using Playwright API
 
-# 4. Run test to verify it works
+# 4. Run test to verify
 npx playwright test e2e_tests/mycategory/mytest.spec.js --headed
 
 # 5. Debug if needed
@@ -381,170 +314,67 @@ git push
 
 ### Workflow 2: Debugging a Failing Test
 ```powershell
-# 1. Run test in debug mode
-npx playwright test e2e_tests/individual/creditcard_payment.spec.js --debug
+# Run in debug mode
+npx playwright test path/to/test.spec.js --debug
 
-# 2. Playwright Inspector opens
-# 3. Step through test line by line
-# 4. Use DevTools to inspect page elements
-# 5. Find the issue (selector changed, timing, etc.)
-# 6. Fix the code
-# 7. Run test again to verify fix
-```
-
-### Workflow 3: Local Testing Before Commit
-```powershell
-# 1. Make code changes
-# 2. Run tests locally
-npx playwright test
-
-# 3. If all pass ✅
-git add .
-git commit -m "Fix feature X"
-git push
-
-# 4. If any fail ❌
-# Debug and fix until all pass
-```
-
----
-
-## Tips for Developers
-
-### Tip 1: Use Headed Mode During Development
-```powershell
-npx playwright test --headed
-# See the browser open and watch what's happening
-# Easier to debug issues
-```
-
-### Tip 2: Run Single Tests for Faster Iteration
-```powershell
-npx playwright test e2e_tests/individual/creditcard_payment.spec.js
-# Much faster than running all 22 tests
-# Use this while developing/fixing
-```
-
-### Tip 3: Use Playwright Inspector for Selectors
-```powershell
-npx playwright codegen https://dev.justpay.to
-# Starts interactive mode where you can click elements
-# Gets selectors automatically
-# Great for finding the right selector
-```
-
-### Tip 4: Use VS Code Debugging
-- Open VS Code
-- Set breakpoints in test files (click left of line number)
-- Run with Playwright extension
-- Step through code line by line
-
-### Tip 5: Check Environment Variables
-```powershell
-# Verify your .env file is being read
-node -e "require('dotenv').config(); console.log(process.env.INDIVIDUAL_PAYMENT_URL)"
-
-# Should print the URL, not undefined
+# Playwright Inspector opens — step through test line by line
+# Use DevTools to inspect page elements
+# Find the issue, fix the code, run again to verify
 ```
 
 ---
 
 # 📧 Gmail API Setup Guide for Email Testing
 
-This guide explains how to add new email accounts for automated testing using Gmail API with multiple OAuth credentials.
-
-## Overview
 Each Gmail account requires its own OAuth credentials. Follow these steps to set up a new email account for testing.
 
-### Step 1: Environment Configuration
+## Step 1: Environment Configuration
 
-#### 1.1 Add Email to `.env` File
-Declare the new email account with a descriptive variable name:
-
-```powershell
-#Emails
-INDIVIDUAL_MERCHANT_EMAIL=fpz.test1@gmail.com
+### 1.1 Add Email to `.env` File
+```
+TEST_MERCHANT_EMAIL=your.test.email@gmail.com
 ```
 
-#### 1.2 Update `playwright.config.js`
-Add the environment variable to your Playwright configuration:
+### 1.2 Update `playwright.config.js`
+```javascript
+TEST_MERCHANT_EMAIL: process.env.TEST_MERCHANT_EMAIL,
+```
+
+## Step 2: Gmail API Credential Paths
+Add credential and token file paths to `helpers/gmail-helper.js`:
 
 ```javascript
-//merchant email
-INDIVIDUAL_MERCHANT_EMAIL:process.env.INDIVIDUAL_MERCHANT_EMAIL,
+const credentialPath = path.resolve(process.cwd(), 'playwright_credentials.json');
+const tokenPath = path.resolve(process.cwd(), 'playwright_token.json');
 ```
 
-### Step 2: Gmail API Credential Paths
-Add credential and token file paths to `helpers/gmail-helpers.js`:
+## Step 3: Create OAuth Credentials in Google Cloud Console
 
-```javascript
-// Gmail credentials paths for individual accounts
-const credentialPathIndividualUser = path.resolve(process.cwd(), 'playwright_individual_user.json');
-const tokenPathIndividualUser = path.resolve(process.cwd(), 'playwright_individual_token.json');
-```
+1. Go to Google Cloud Console → Gmail API Credentials
+2. Click **Create Credentials** → **OAuth client ID**
+3. Select **Desktop App** as Application type
+4. Enter a descriptive name and click **Create**
+5. Download the JSON credentials file
+6. Rename it to match your credential path and place it in the project root
 
-### Step 3: Create OAuth Credentials in Google Cloud Console
-
-#### 3.1 Go to Google Cloud Console
-Navigate to Gmail API Credentials
-
-#### 3.2 Create OAuth 2.0 Client
-1. Click `Create Credentials` → `OAuth client ID`
-2. Select `Desktop App` as Application type
-3. Enter a descriptive name (e.g., "Individual Merchant Email")
-4. Click `Create`
-
-#### 3.3 Download Credentials
-1. Download the JSON file from the credentials dialog
-2. Click `OK` to close the dialog
-3. Rename the downloaded file to match your credential path (e.g., credentials-individual-merchant.json)
-4. Place the file in your test folder root directory
-
-### Step 4: Generate Authentication Token
-Run the following command to generate the authentication token in terminal:
+## Step 4: Generate Authentication Token
 
 ```powershell
-node node_modules/gmail-tester/init.js file_name.json file_name_token.json used_email_address@gmail.com
+node node_modules/gmail-tester/init.js credentials.json token.json your.email@gmail.com
 ```
 
-Example:
+A browser window will open — authorize the application. The token file will be created in the project root.
 
-```powershell
-node node_modules/gmail-tester/init.js playwright_individual_merchant.json playwright_individual_merchant_token.json fpz.test1@gmail.com
-```
-
-Parameters:
-- **credentials**-individual-merchant.json - Your downloaded credential file
-- **token-individual-merchant.json** - Token file to be generated
-- **fpz.test1@gmail.com** - The Gmail account from Step 1
-
-#### 4.1 Authorize Application
-1. A browser window will open
-2. Select the Gmail account that matches your configuration
-3. Click `Continue` through the authorization prompts
-4. Grant the necessary permissions
-5. After authorization, the token file will be created in your project root
-
-### Step 5: Configure Task
-
-Add a custom Gmail check task in `helpers/gmail-helper.js`:
+## Step 5: Configure `checkEmail` in `helpers/gmail-helper.js`
 
 ```javascript
 export async function checkEmail(options) {
-  const {
-    from,
-    to,
-    subject,
-    wait_time_sec = 20,
-    max_wait_time_sec = 120,
-    after
-  } = options;
+  const { from, to, subject, wait_time_sec = 20, max_wait_time_sec = 120, after } = options;
 
   try {
-    console.log('🔍 Checking Gmail inbox...');
-    
     let credentialPath, tokenPath;
-   
+
+    // Route to correct credentials based on recipient
     if (to === process.env.BUSINESS_USER_EMAIL) {
       credentialPath = credentialPathBusinessUser;
       tokenPath = tokenPathBusinessUser;
@@ -552,27 +382,18 @@ export async function checkEmail(options) {
       credentialPath = credentialPathIndividualUser;
       tokenPath = tokenPathIndividualUser;
     }
-   
-    const afterDate = after ? new Date(after) : undefined;
-   
-    const email = await gmail.check_inbox(
-      credentialPath,
-      tokenPath,
-      {
-        subject,
-        to,
-        from,
-        include_body: true,
-        wait_time_sec,
-        max_wait_time_sec,
-        after: afterDate
-      }
-    );
 
-    if (email) {
-      console.log('✅ Email found');
-    }
-   
+    const afterDate = after ? new Date(after) : undefined;
+
+    const email = await gmail.check_inbox(credentialPath, tokenPath, {
+      subject, to, from,
+      include_body: true,
+      wait_time_sec,
+      max_wait_time_sec,
+      after: afterDate
+    });
+
+    if (email) console.log('✅ Email found');
     return email;
   } catch (error) {
     console.error('❌ Gmail check error:', error.message);
@@ -581,43 +402,46 @@ export async function checkEmail(options) {
 }
 ```
 
-### Step 6: Use in Test Files
-
-#### 6.1 Import checkEmail function
-
-```javascript  
-import { checkEmail, extractOTP, checkMerchantEmail } from '../../helpers/gmail-helper.js';
-```
-
-#### 6.2 Call checkEmail in your test
+## Step 6: Use in Test Files
 
 ```javascript
-const testTriggerTime1 = Date.now();
-const searchTime1 = new Date(testTriggerTime1 - 30 * 1000);
+import { checkEmail } from '../../helpers/gmail-helper.js';
 
-const payerEmail = await checkEmail({
-  from: 'hello@justpay.to',
-  to: process.env.INDIVIDUAL_USER_EMAIL,
-  subject: 'You are sending',
+// In your test:
+const testTriggerTime = Date.now();
+const searchTime = new Date(testTriggerTime - 30 * 1000); // 30s buffer
+
+const email = await checkEmail({
+  from: 'noreply@your-app.com',
+  to: process.env.USER_EMAIL,
+  subject: 'Payment confirmation',
   wait_time_sec: 20,
   max_wait_time_sec: 180,
-  after: searchTime1.toISOString(),
+  after: searchTime.toISOString(),
 });
 
-if (!payerEmail) {
-  throw new Error(`❌ No confirmation email received for payer: ${process.env.INDIVIDUAL_USER_EMAIL}`);
+if (!email) {
+  throw new Error(`❌ No confirmation email received for: ${process.env.USER_EMAIL}`);
 }
+console.log('✅ Confirmation email received.');
 ```
 
-### Task Parameters
+## Task Parameters
+
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
-| from | string | required | Sender Email Address |
-| to | string | required | Recipient Email Address |
-| subject | string | required | Email Subject to search for |
-| wait_time_sec | number | 20 | Time to wait between checks (in seconds) |
-| max_wait_time_sec | number | 120 | Maximum time to wait for email (in seconds) |
-| after | string (ISO) | required | ISO timestamp to search emails after |
+| from | string | required | Sender email address |
+| to | string | required | Recipient email address |
+| subject | string | required | Email subject to search for |
+| wait_time_sec | number | 20 | Time between inbox checks (seconds) |
+| max_wait_time_sec | number | 120 | Maximum wait time (seconds) |
+| after | string (ISO) | required | Only find emails received after this timestamp |
+
+## Troubleshooting Email Issues
+
+- **Token Expired** → Re-run the token generation command, delete old token file first
+- **Email Not Found** → Verify subject/to/from, increase `max_wait_time_sec`, check `after` timestamp buffer
+- **Credentials Error** → Verify file paths exist and match the correct email account
 
 ---
 
@@ -625,273 +449,118 @@ if (!payerEmail) {
 
 ## What is OWASP ZAP?
 
-OWASP ZAP (Zed Attack Proxy) is a free, open-source security testing tool. When integrated with Playwright, it acts as a **proxy** between the browser and your app — intercepting all HTTP/HTTPS traffic and automatically flagging security vulnerabilities like XSS, SQL injection, insecure headers, and more.
-
-> **Think of it like this:** Playwright runs the test as normal, but ZAP sits in the middle watching every network request and response for security issues.
+OWASP ZAP (Zed Attack Proxy) is a free, open-source security testing tool. When integrated with Playwright, it acts as a **proxy** between the browser and your app — intercepting all HTTP/HTTPS traffic and automatically flagging security vulnerabilities.
 
 ```
-Playwright Browser → ZAP Proxy (localhost:8080) → JustPayTo App
+Playwright Browser → ZAP Proxy (localhost:8080) → Your App
 ```
+
+> ZAP is available for **E2E** and **Integration** tests. It is automatically disabled for Unit Tests.
 
 ---
 
-## 📥 Step 1: Install Java (Required by ZAP)
+## Step 1: Install Java (Required by ZAP)
 
-ZAP requires Java 17 or higher to run.
-
-### 1.1 Download Java
-- Go to: **https://adoptium.net**
-- Download **Temurin 17 (LTS)** — Windows x64 `.msi` installer
-
-### 1.2 Install Java
-1. Run the downloaded `.msi` installer
-2. On the installation options screen, make sure these are checked:
+1. Download **Temurin 17 (LTS)** from https://adoptium.net (Windows x64 `.msi`)
+2. During install, make sure these are checked:
    - ✅ Set `JAVA_HOME` variable
    - ✅ Add to PATH
-3. Complete the installation
-
-### 1.3 Verify Java is installed
-Open a **new** Command Prompt and run:
-
-```powershell
-java -version
-```
-
-You should see something like:
-```
-openjdk version "17.x.x" ...
-```
-
-If you see a version number, Java is ready. ✅
+3. Verify in a new Command Prompt:
+   ```powershell
+   java -version
+   ```
 
 ---
 
-## 📥 Step 2: Install OWASP ZAP
+## Step 2: Install OWASP ZAP
 
-### 2.1 Download ZAP
-- Go to: **https://www.zaproxy.org/download/**
-- Download the **Windows Installer (.exe)**
-
-### 2.2 Run the Installer
-1. Double-click the downloaded installer
-2. If you see: *"The install4j wizard could not find a Java Runtime Environment"*
-   - Click **Locate**
-   - Open Command Prompt and run `where java` to find your Java path
-   - It will show something like: `C:\Program Files\Eclipse Adoptium\jdk-17.x.x-hotspot\bin\java.exe`
-   - In the Locate dialog, navigate to that folder **without** `\bin` at the end:
-     ```
-     C:\Program Files\Eclipse Adoptium\jdk-17.x.x-hotspot
-     ```
-   - Select that folder and click OK
-3. Complete the installation
-
-### 2.3 Launch ZAP
-- Open ZAP from your Start Menu or Desktop shortcut
-- Wait for it to fully load (it may take 30–60 seconds the first time)
+1. Download from https://www.zaproxy.org/download/ (Windows Installer)
+2. Run the installer — if prompted to locate Java, run `where java` in Command Prompt to find the path (e.g. `C:\Program Files\Eclipse Adoptium\jdk-17.x.x-hotspot`) and point to that folder
+3. Launch ZAP from Start Menu
 
 ---
 
-## ⚙️ Step 3: Configure ZAP Proxy
+## Step 3: Configure ZAP Proxy
 
-### 3.1 Verify the proxy port
-In ZAP, go to:
-```
-Tools → Options → Network → Local Servers/Proxies
-```
+In ZAP, go to: **Tools → Options → Network → Local Servers/Proxies**
 
-Confirm the **Main Proxy** settings:
+Confirm:
 - **Address:** `localhost`
 - **Port:** `8080`
 
-> If the port is different, note it down — you'll need to enter it in the dashboard.
-
-### 3.2 Keep ZAP open
-ZAP must remain **open and running** the entire time your Playwright test is executing. Do not close it during a test run.
+Keep ZAP open the entire time your test is running.
 
 ---
 
-## 🖥️ Step 4: Enable ZAP in the Test Dashboard
+## Step 4: Enable ZAP in the Test Dashboard
 
-### 4.1 Open the dashboard
-```
-Double-click RUN_TEST_SUITE.bat
-```
-Go to `http://localhost:3000`
-
-### 4.2 Select your test
-- Click on any **E2E** or **Integration** test from the left panel
-- ⚠️ ZAP is **not available** for Unit Tests (automatically disabled)
-
-### 4.3 Enable the ZAP toggle
-In the **Test Configuration** panel on the right, you will see:
-
-```
-🛡️ ZAP Security Scan    [OFF toggle]
-```
-
-Click the toggle to turn it **ON**. The panel will expand to show:
-- **ZAP Host** — leave as `localhost`
-- **ZAP Port** — leave as `8080` (or change if yours is different)
-- **🔍 Check Connection** button
-
-### 4.4 Verify ZAP is reachable
-Click **"🔍 Check Connection"**. You should see:
-
-```
-✅ ZAP is reachable at localhost:8080
-```
-
-If you see a red error:
-- Make sure ZAP is open and fully loaded
-- Check the port matches what's shown in ZAP's Options
-- Try disabling Windows Firewall temporarily and check again
-
-### 4.5 Run the test
-Choose your browser and display mode, then click **▶️ Run Test**.
+1. Open the dashboard: `RUN_TEST_SUITE.bat` → `http://localhost:3000`
+2. Select any **E2E** or **Integration** test
+3. In the Test Configuration panel, toggle **🛡️ ZAP Security Scan** to **ON**
+4. Click **"🔍 Check Connection"** — you should see: `✅ ZAP is reachable at localhost:8080`
+5. Click **▶️ Run Test**
 
 The output will show:
 ```
 🛡️ ZAP Security Proxy ENABLED (localhost:8080)
 📡 All browser traffic will be intercepted by ZAP
-────────────────────────────────────────────────────────────
-... normal Playwright test output ...
 ```
 
 ---
 
-## 📊 Step 5: Viewing ZAP Results
+## Step 5: Viewing ZAP Results
 
-### Option 1 — Alerts Tab (Quick Check)
+### Alerts Tab (Quick Check)
+In ZAP, click the **Alerts** tab:
 
-While ZAP is open after your test:
+| Color | Severity | Action |
+|-------|----------|--------|
+| 🔴 Red | High | Fix immediately |
+| 🟠 Orange | Medium | Should be addressed |
+| 🟡 Yellow | Low | Low priority |
+| 🔵 Blue | Informational | Awareness only |
 
-1. Click the **Alerts** tab at the bottom of ZAP
-2. You will see all security issues found, color-coded by severity:
+Click any alert for details: what it is, which URL triggered it, why it's a risk, and how to fix it.
 
-| Color | Severity | Meaning |
-|-------|----------|---------|
-| 🔴 Red | High | Serious vulnerability — fix immediately |
-| 🟠 Orange | Medium | Moderate risk — should be addressed |
-| 🟡 Yellow | Low | Minor issue — low priority |
-| 🔵 Blue | Informational | Not a risk, just for awareness |
+### Generate a Report
+**Report → Generate Report → HTML** → Open in browser to share with the team.
 
-3. Click any alert to see full details:
-   - **What** the vulnerability is
-   - **Which URL** triggered it
-   - **Why** it's a risk
-   - **How to fix** it (Solution section)
+### History Tab
+View every HTTP request Playwright made during the test — useful to confirm ZAP is intercepting traffic.
 
 ---
 
-### Option 2 — Generate a Report (Shareable)
+## Common Alerts You May See
 
-To save and share findings with the team:
-
-1. In ZAP, go to: **Report → Generate Report**
-2. Select format: **HTML** (easiest to read and share)
-3. Choose a save location on your PC
-4. Click **Generate**
-5. Open the `.html` file in your browser
-
-The report includes:
-- Executive summary of all alerts
-- Risk level breakdown
-- Per-URL findings with detailed descriptions
-- Recommended fixes for each issue
-
-> **Tip:** Save reports with the date and test name, e.g., `zap-report-creditcard-2026-02-23.html`, so you can track security improvements over time.
+| Alert | Risk | Meaning |
+|-------|------|---------|
+| Missing Anti-clickjacking Header | Medium | Pages lack `X-Frame-Options` |
+| Content Security Policy Not Set | Medium | No script load restrictions |
+| Cookie Without Secure Flag | Medium | Cookies sent over non-HTTPS |
+| Cookie Without SameSite Attribute | Low | Cross-site cookie risk |
+| X-Content-Type-Options Missing | Low | Browser may misinterpret file types |
+| Strict-Transport-Security Not Set | Low | HTTPS not enforced via HSTS |
+| Information Disclosure - Debug Errors | Medium | Stack traces visible to users |
 
 ---
 
-### Option 3 — History Tab (Raw Traffic)
+## ZAP Tips
 
-To inspect individual HTTP requests made during the test:
-
-1. Click the **History** tab at the bottom of ZAP
-2. You will see every request Playwright made during the test
-3. Click any row to see the full **Request** and **Response**
-
-This is useful for:
-- Confirming ZAP is actually intercepting traffic (History should populate during the test)
-- Inspecting specific API calls or page loads
-- Debugging why a certain request is flagged
+- Use **Headed Mode** with ZAP for your first run — watch traffic populate in the History tab to confirm it's working
+- Run ZAP-enabled tests on **staging** before every major release
+- ZAP passive scanning does **not** replace manual penetration testing — use it as a first layer
 
 ---
 
-## 🚦 Step 6: Understanding Alert Types
+## ZAP Troubleshooting
 
-Here are the most common alerts you may see when testing JustPayTo:
-
-| Alert | Risk | What it means |
-|-------|------|----------------|
-| Missing Anti-clickjacking Header | Medium | Pages lack `X-Frame-Options` header |
-| X-Content-Type-Options Header Missing | Low | Browser may misinterpret file types |
-| Content Security Policy (CSP) Header Not Set | Medium | No restrictions on what scripts can load |
-| Cookie Without Secure Flag | Medium | Cookies sent over non-HTTPS connections |
-| Cookie Without SameSite Attribute | Low | Cookies may be sent in cross-site requests |
-| Information Disclosure - Debug Errors | Medium | Stack traces visible to end users |
-| Strict-Transport-Security Header Not Set | Low | HTTPS not enforced via HSTS |
-
-> **Note:** Not every alert is a critical bug. Share the ZAP report with a developer and they will triage which issues need to be fixed.
-
----
-
-## 💡 Tips for ZAP + Playwright
-
-### Use Headed Mode with ZAP
-When running ZAP scans for the first time, use **Headed (Show Browser)** mode. This lets you:
-- Watch the test run visually
-- Simultaneously check the ZAP History tab filling up with requests
-- Confirm everything is working before running headless
-
-### Best Tests to Scan with ZAP
-ZAP is most valuable on tests that cover:
-- **Payment flows** — credit card, bank transfer, e-wallet
-- **Login/authentication pages**
-- **Form submissions** (billing info, addresses)
-- **API calls** made during checkout
-
-### ZAP Does NOT Replace Manual Security Testing
-ZAP's passive scan catches many common issues automatically, but it cannot:
-- Test business logic vulnerabilities
-- Replace manual penetration testing
-- Guarantee a page is fully secure
-
-Use ZAP as a **first layer** of security checking during your regular QA runs.
-
-### Run ZAP Scans Before Release
-A good practice is to run ZAP-enabled tests on the staging environment before every major release. This catches regressions in security headers or new endpoints that were not hardened.
-
----
-
-## 🐛 ZAP Troubleshooting
-
-### "ZAP not reachable" in dashboard
-- Make sure ZAP is fully open (not still loading)
-- Confirm the port in ZAP: **Tools → Options → Network → Local Servers/Proxies**
-- Try temporarily disabling Windows Firewall
-- Run in Command Prompt: `curl -x http://localhost:8080 http://example.com` — if you get HTML back, ZAP is working
-
-### ZAP History tab is empty after test
-- The proxy is not intercepting traffic
-- Confirm `playwright.config.js` has the proxy block (check the file was saved to the project root)
-- Restart the test runner server after making config changes: close the `.bat` window and reopen it
-
-### Tests fail with SSL errors when ZAP is ON
-- This is expected — ZAP uses its own certificate for HTTPS
-- The `ignoreHTTPSErrors: true` setting in `playwright.config.js` handles this automatically
-- If tests still fail, confirm you saved the updated `playwright.config.js`
-
-### ZAP crashes or freezes
-- ZAP needs at least **4GB of RAM** available
-- Close other heavy applications before running ZAP
-- Restart ZAP and try again
-
-### Java not found during ZAP install
-- Run `where java` in Command Prompt to find your Java path
-- Click **Locate** in the ZAP installer dialog
-- Navigate to your JDK folder (e.g., `C:\Program Files\Eclipse Adoptium\jdk-17.x.x-hotspot`)
-- Select the folder (not the `bin` subfolder) and click OK
+| Problem | Solution |
+|---|---|
+| "ZAP not reachable" in dashboard | Make sure ZAP is fully open. Confirm port in Tools → Options → Network |
+| ZAP History tab empty after test | Config not applied — restart the `.bat` server after saving `playwright.config.js` |
+| SSL errors when ZAP is ON | `ignoreHTTPSErrors: true` is set in `playwright.config.js` automatically — confirm the file was saved |
+| ZAP crashes or freezes | ZAP needs 4GB+ RAM — close other heavy applications |
+| Java not found during install | Run `where java`, then use Locate dialog in installer to point to your JDK folder (not the `/bin` subfolder) |
 
 ---
 
@@ -900,260 +569,140 @@ A good practice is to run ZAP-enabled tests on the staging environment before ev
 ## Architecture Overview
 
 ```
-┌─────────────────────────────────────────────────────┐
-│  User Interface                                     │
-│  - QA Dashboard (Web Browser)                       │
-│  - Test Selection & Configuration                   │
-│  - Real-Time Output Monitoring                      │
-│  - ZAP Security Toggle                              │
-└────────────┬────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────┐
+│  QA Dashboard (Web Browser)                          │
+│  - Test type tabs (E2E / Integration / Unit)         │
+│  - Device & display mode selection                   │
+│  - ZAP Security toggle with host/port config         │
+│  - Real-time output streaming                        │
+└────────────┬─────────────────────────────────────────┘
              │ HTTP Requests
              ↓
-┌─────────────────────────────────────────────────────┐
-│  Backend Server (Express.js)                        │
-│  - /api/tests - List available tests                │
-│  - /api/run-test - Execute test with params         │
-│  - /api/test-status - Poll for status/output        │
-│  - /api/stop-test - Kill running test               │
-│  - /api/clear-test - Reset output                   │
-│  - /api/zap-status - Check if ZAP is reachable      │
-└────────────┬────────────────────────────────────────┘
-             │ Process Spawn (with ZAP env vars if enabled)
+┌──────────────────────────────────────────────────────┐
+│  Backend Server (Express.js)                         │
+│  GET  /api/tests          - List tests by type       │
+│  POST /api/run-test       - Execute test             │
+│  GET  /api/test-status    - Poll status/output       │
+│  POST /api/stop-test      - Kill running test        │
+│  POST /api/clear-test     - Reset output             │
+│  GET  /api/zap-status     - TCP check ZAP port       │
+└────────────┬─────────────────────────────────────────┘
+             │ Process spawn (with ZAP env vars if enabled)
              ↓
-┌─────────────────────────────────────────────────────┐
-│  Playwright Test Engine                             │
-│  - Launches browser instance                        │
-│  - Routes traffic through ZAP proxy (if enabled)   │
-│  - Executes test file (PowerShell)                  │
-│  - Captures stdout/stderr                           │
-└────────────┬────────────────────────────────────────┘
-             │ Browser Automation (optionally via ZAP)
+┌──────────────────────────────────────────────────────┐
+│  Playwright Test Engine                              │
+│  - Launches browser (with ZAP proxy if enabled)      │
+│  - Executes selected test file                       │
+│  - Captures stdout/stderr                            │
+└────────────┬─────────────────────────────────────────┘
+             │ (optional)
              ↓
-┌─────────────────────────────────────────────────────┐
-│  ZAP Proxy (optional, localhost:8080)               │
-│  - Intercepts all HTTP/HTTPS traffic                │
-│  - Passive security scan in real time               │
-│  - Stores alerts and history                        │
-└────────────┬────────────────────────────────────────┘
-             │
-             ↓
-┌─────────────────────────────────────────────────────┐
-│  Target Website (dev.justpay.to)                    │
-│  - Payment flows                                    │
-│  - Form submissions                                 │
-│  - Email notifications                              │
-└─────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────┐
+│  ZAP Proxy (localhost:8080)                          │
+│  - Intercepts all HTTP/HTTPS traffic                 │
+│  - Passive security scan in real time                │
+│  - Stores alerts and history                         │
+└──────────────────────────────────────────────────────┘
 ```
 
-## Files Created/Modified
+## Key Implementation Details
 
-### Core Dashboard Files
-```
-✅ gui/test-runner.js          - Express.js backend server
-✅ gui/public/index.html       - Web dashboard UI
-✅ playwright.config.js        - Playwright config with ZAP proxy support
-✅ RUN_TEST_SUITE.bat          - Windows launcher
-✅ CREATE_DESKTOP_SHORTCUT.bat - Shortcut creator
-```
-
-### Package Management
-```
-✏️ package.json                - Added express, body-parser
-✏️ .gitignore                  - Added .env, node_modules, reports
-```
-
-### GitHub CI/CD
-```
-✏️ .github/workflows/playwright.yml - Automated testing setup
-```
-
----
-
-## Features Implemented
-
-### 1. Web Dashboard
-- ✅ Beautiful responsive UI
-- ✅ Test selection with live search/filter
-- ✅ Configuration options (browser, display mode)
-- ✅ Real-time test output (streaming logs)
-- ✅ Status indicators (idle, running, success, error)
-- ✅ One-click test execution
-- ✅ Stop/cancel functionality
-- ✅ Clear output logs
-- ✅ Help & tips section
-- ✅ ZAP Security Scan toggle with host/port config
-- ✅ ZAP connection checker (TCP socket)
-- ✅ ZAP auto-disabled for Unit Tests
-
-### 2. Backend API
+### ZAP Integration
 ```javascript
-// Test Discovery
-GET /api/tests
+// Backend: inject ZAP env vars before spawning test process
+if (zapEnabled) {
+  envVars.ZAP_ENABLED = 'true';
+  envVars.ZAP_HOST = zapHost;
+  envVars.ZAP_PORT = String(zapPort);
+  envVars.HTTP_PROXY = `http://${zapHost}:${zapPort}`;
+  envVars.HTTPS_PROXY = `http://${zapHost}:${zapPort}`;
+}
 
-// Test Execution (now supports ZAP params)
-POST /api/run-test
-// Body: { testPath, browser, headed, zapEnabled, zapHost, zapPort }
-
-// Status Polling
-GET /api/test-status
-
-// ZAP Connection Check
-GET /api/zap-status?host=localhost&port=8080
-
-// Control
-POST /api/stop-test
-POST /api/clear-test
+// playwright.config.js: conditionally set proxy
+...(process.env.ZAP_ENABLED === 'true' ? {
+  proxy: { server: `http://${process.env.ZAP_HOST}:${process.env.ZAP_PORT}` }
+} : {}),
+ignoreHTTPSErrors: process.env.ZAP_ENABLED === 'true',
 ```
 
-### 3. ZAP Integration
-- ✅ ZAP toggle in GUI (off by default)
-- ✅ Expandable host/port settings
-- ✅ TCP socket connection check (not HTTP — proxy ports don't respond to plain HTTP)
-- ✅ `ZAP_ENABLED`, `ZAP_HOST`, `ZAP_PORT` injected as env vars before test spawn
-- ✅ `playwright.config.js` reads env vars and conditionally sets `proxy` + `ignoreHTTPSErrors`
-- ✅ ZAP reminder message appended to output after test completes
+### ZAP Connection Check (TCP Socket)
+```javascript
+// Uses TCP socket — not HTTP — because proxy ports don't respond to plain HTTP
+app.get('/api/zap-status', (req, res) => {
+  const socket = new net.Socket();
+  socket.connect(port, host, () => {
+    res.json({ reachable: true });
+  });
+  socket.on('error', () => res.json({ reachable: false }));
+});
+```
+
+### Test Type Discovery
+```javascript
+// Backend: scan different folders based on type query param
+const typeMap = {
+  'e2e': 'e2e_tests',
+  'integration': 'integration_tests',
+  'unit': 'unit_tests'
+};
+const testDir = path.join(__dirname, '..', typeMap[testType]);
+```
+
+### Features Implemented
+- ✅ E2E / Integration / Unit test type tabs
+- ✅ Desktop, mobile, and tablet device selection
+- ✅ ZAP toggle with expandable host/port settings
+- ✅ ZAP TCP connection checker
+- ✅ ZAP auto-disabled for Unit Tests
+- ✅ Real-time output streaming
+- ✅ Stop/clear test controls
+- ✅ GitHub Actions CI/CD
 
 ---
 
 # 🐛 Troubleshooting
 
-## Problem: Tests Pass Locally but Fail in GitHub CI/CD
+## Tests Pass Locally but Fail in GitHub CI/CD
+1. **Environment Variables Not Set** → GitHub repo → Settings → Secrets and variables → Actions
+2. **Different OS** → GitHub uses Linux; check `.github/workflows/playwright.yml`
+3. **Timeout Issues** → CI servers are slower; increase timeouts in `playwright.config.js`
 
-1. **Environment Variables Not Set** — Go to GitHub repo → Settings → Secrets and variables → Actions. Add all variables from your `.env` file.
-2. **Different Test Environment** — GitHub uses Linux (not Windows). Check `.github/workflows/playwright.yml`.
-3. **Timeout Issues in CI** — CI servers are slower. Increase timeouts in `playwright.config.js` if needed.
-
----
-
-## Problem: "Element not found" Error
-
+## "Element not found" Error
 ```powershell
-# Run in headed mode to see what's happening
-npx playwright test e2e_tests/individual/creditcard_payment.spec.js --headed
+# Run headed to see what's happening
+npx playwright test path/to/test.spec.js --headed
 
-# Use debug mode to pause at error
-npx playwright test e2e_tests/individual/creditcard_payment.spec.js --debug
+# Step through in debug mode
+npx playwright test path/to/test.spec.js --debug
 
-# Regenerate selectors with Inspector
-npx playwright codegen https://dev.justpay.to
+# Regenerate selectors
+npx playwright codegen https://your-target-url.com
 ```
 
----
+## Email Verification Failing
+- Verify `from`, `to`, `subject` parameters
+- Increase `max_wait_time_sec`
+- Check the `after` timestamp has enough buffer
+- Re-run token generation if credentials expired
 
-## Problem: Email Verification Failing
-
-- Verify `from`, `to`, `subject` parameters are correct
-- Increase `max_wait_time_sec` to allow for email delays
-- Check the `after` timestamp allows enough time buffer
-- Re-run token generation if credentials have expired
-
----
-
-## Problem: Dashboard Won't Open
-
-1. Check Node.js is running — you should see `Test Runner started at http://localhost:3000`
-2. Check port 3000 is free: `netstat -ano | findstr :3000`
+## Dashboard Won't Open
+1. Wait 10 seconds after running the `.bat` file
+2. Check port 3000: `netstat -ano | findstr :3000`
 3. Manually open: `http://localhost:3000`
-4. Check browser console (F12) for red errors
+4. Check browser console (F12) for errors
 
----
-
-## Problem: Test Takes Too Long
-
-1. Use **Headless Mode** — ~20% faster
-2. Use **Chromium** — fastest browser
-3. Run during off-peak hours
-4. Check website status before running
-
----
-
-## Problem: Credentials Not Working
-
-1. Verify `.env` file exists: `Test-Path .\.env`
-2. Check all required variables are present
-3. Confirm values are current — ask team lead
-4. Ensure `.env` is in `.gitignore`
-
----
-
-## Problem: "Command not found" Error
-
+## "Command not found" Error
 ```powershell
 # node not found → reinstall from https://nodejs.org/
 # git not found → install from https://git-scm.com/
-# After installing, always restart PowerShell
+# Always restart PowerShell after installing
 ```
 
----
-
-# 📚 Additional Resources
-
-## Playwright Documentation
-- **Official Docs**: https://playwright.dev
-- **API Reference**: https://playwright.dev/docs/api/class-browser
-- **Selectors**: https://playwright.dev/docs/selectors
-- **Debug Guide**: https://playwright.dev/docs/debug
-
-## ZAP Resources
-- **Official Site**: https://www.zaproxy.org
-- **Download**: https://www.zaproxy.org/download/
-- **Alert Descriptions**: https://www.zaproxy.org/docs/alerts/
-- **Getting Started Guide**: https://www.zaproxy.org/getting-started/
-
-## JustPayTo Specific
-- **Base URL**: https://dev.justpay.to
-- **Dashboard**: https://dashboard-dev.justpay.to
-- **API Docs**: Ask your team lead
-
----
-
-## Checklist: Setting Up for the First Time
-
-- [ ] Install Node.js
-- [ ] Install Git  
-- [ ] Install VS Code (optional, for developers)
-- [ ] Clone repository
-- [ ] Navigate to folder and run `npm install`
-- [ ] Install browsers: `npx playwright install --with-deps`
-- [ ] Get `.env` file from team lead
-- [ ] Place `.env` in project root
-- [ ] Test dashboard: `RUN_TEST_SUITE.bat`
-- [ ] Verify dashboard opens at `http://localhost:3000`
-- [ ] Run a test to verify everything works
-
-## Checklist: Setting Up ZAP Security Testing
-
-- [ ] Install Java 17+ from https://adoptium.net
-- [ ] Verify Java: `java -version` in Command Prompt
-- [ ] Download ZAP from https://www.zaproxy.org/download/
-- [ ] Install ZAP (use Locate if Java not auto-detected)
-- [ ] Open ZAP and confirm proxy: Tools → Options → Network → Local Servers/Proxies
-- [ ] Confirm port is `8080`
-- [ ] Open test dashboard and select an E2E test
-- [ ] Toggle ZAP ON in Test Configuration
-- [ ] Click "Check Connection" → confirm ✅ green
-- [ ] Run test and verify output shows ZAP enabled message
-- [ ] Check ZAP History tab for intercepted traffic
-- [ ] Generate HTML report: Report → Generate Report
-
-## Checklist: Before Running Tests
-
-- [ ] `.env` file exists and has all variables
-- [ ] Internet connection is working
-- [ ] Website (dev.justpay.to) is up and accessible
-- [ ] No other app using port 3000
-- [ ] Credentials in `.env` are current and valid
-- [ ] If using ZAP: ZAP application is open and running
-
-## Checklist: Reporting Test Failures
-
-- [ ] Test name and file path
-- [ ] Browser used (Chromium, Firefox, Safari)
-- [ ] Display mode (Headed or Headless)
-- [ ] Whether ZAP was enabled
-- [ ] Full error message from output
-- [ ] When did it start failing
-- [ ] Any recent website changes
+## Credentials Not Working
+1. Verify `.env` exists: `Test-Path .\.env`
+2. Check all required variables are present
+3. Confirm values are current — ask team lead
+4. Ensure `.env` is in `.gitignore`
 
 ---
 
@@ -1163,8 +712,14 @@ npx playwright codegen https://dev.justpay.to
 # Start dashboard
 RUN_TEST_SUITE.bat
 
-# Run all tests (terminal)
-npx playwright test
+# Run all E2E tests
+npx playwright test e2e_tests/
+
+# Run unit tests
+npx playwright test unit_tests/
+
+# Run integration tests
+npx playwright test integration_tests/
 
 # Run specific test
 npx playwright test e2e_tests/individual/creditcard_payment.spec.js
@@ -1179,13 +734,50 @@ npx playwright test --debug
 npx playwright show-report
 
 # Generate selectors
-npx playwright codegen https://dev.justpay.to
+npx playwright codegen https://your-target-url.com
 
-# Check Java version (for ZAP)
+# Check Java (for ZAP)
 java -version
 
-# Find Java install path (for ZAP Locate dialog)
+# Find Java path (for ZAP Locate dialog)
 where java
 ```
 
 ---
+
+## Setup Checklists
+
+### First Time Setup
+- [ ] Install Node.js from https://nodejs.org/
+- [ ] Install Git from https://git-scm.com/
+- [ ] Clone repository and `cd` into it
+- [ ] Run `npm install`
+- [ ] Run `npx playwright install --with-deps`
+- [ ] Get `.env` file from team lead
+- [ ] Place `.env` in project root
+- [ ] Run `RUN_TEST_SUITE.bat` and verify dashboard opens
+
+### ZAP Security Testing Setup
+- [ ] Install Java 17+ from https://adoptium.net
+- [ ] Verify: `java -version` in Command Prompt
+- [ ] Download ZAP from https://www.zaproxy.org/download/
+- [ ] Open ZAP — confirm proxy at Tools → Options → Network → port `8080`
+- [ ] In dashboard, select an E2E or Integration test
+- [ ] Toggle ZAP ON → click Check Connection → confirm ✅ green
+- [ ] Run test and verify ZAP message appears in output
+- [ ] Check ZAP History tab for intercepted traffic
+
+### Before Running Tests
+- [ ] `.env` file exists with all variables
+- [ ] Website/API target is up and accessible
+- [ ] No other app using port 3000
+- [ ] If using ZAP: ZAP application is open and running
+
+### Reporting Test Failures
+- [ ] Test name and file path
+- [ ] Browser/device used
+- [ ] Display mode (Headed or Headless)
+- [ ] Whether ZAP was enabled
+- [ ] Full error message from output
+- [ ] When it started failing
+- [ ] Any recent changes to the website or API
