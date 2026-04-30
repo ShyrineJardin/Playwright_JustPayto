@@ -863,7 +863,7 @@
             const toggle = document.getElementById('zapToggle');
             const unitNotice = document.getElementById('zapUnitNotice');
 
-            if (type === 'unit' || type === 'integration') {
+            if (type === 'unit') {
                 // Disable ZAP for unit and integration tests
                 toggle.checked = false;
                 onZapToggleChange();

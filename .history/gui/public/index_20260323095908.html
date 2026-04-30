@@ -695,7 +695,7 @@
 
                     <!-- Shown only when unit tests tab is active -->
                     <div class="zap-unit-notice" id="zapUnitNotice" style="display:none;">
-                        ⚠️ ZAP proxy is not applicable for Unit and Integration Tests
+                        ⚠️ ZAP proxy is not applicable for Unit Tests
                     </div>
 
                     <!-- Expanded settings when ZAP is ON -->
@@ -766,7 +766,7 @@
                             <li style="margin-bottom: 5px;">Acts as a proxy between Playwright and your app</li>
                             <li style="margin-bottom: 5px;">Passively intercepts all HTTP/HTTPS traffic during the test</li>
                             <li style="margin-bottom: 5px;">Flags security issues like XSS, SQL injection, insecure headers, and more</li>
-                            <li style="margin-bottom: 5px;">Best used on E2E tests — not applicable for Unit and Integration tests</li>
+                            <li style="margin-bottom: 5px;">Best used on E2E — not applicable for Unit tests</li>
                         </ul>
                         <p style="margin-top: 10px; font-size: 13px; color: #666;"><strong>Before enabling:</strong> Make sure OWASP ZAP is open and running on your machine. Default address is <code>localhost:8080</code>. Use "Check Connection" to verify.</p>
                     </div>
@@ -863,8 +863,8 @@
             const toggle = document.getElementById('zapToggle');
             const unitNotice = document.getElementById('zapUnitNotice');
 
-            if (type === 'unit' || type === 'integration') {
-                // Disable ZAP for unit and integration tests
+            if (type === 'unit') {
+                // Disable ZAP for unit tests
                 toggle.checked = false;
                 onZapToggleChange();
                 section.classList.add('zap-disabled');

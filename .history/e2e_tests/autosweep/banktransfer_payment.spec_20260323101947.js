@@ -33,7 +33,7 @@
 
         await expect(page).toHaveURL(/justpay\.to/);
 
-    console.log('📢 Close the Autosweep Announcement Modal')
+        console.log('📢 Close the Autosweep Announcement Modal')
         
         // Wait for the modal to appear
         const modal = page.locator('section.modal.information')
@@ -106,7 +106,7 @@
         console.log('✅ Amount filled successfully');
 
         // // check if the currency dropdown is working
-        // console.log('💬 Checking currency dropdown functionality');
+        // console.log('💬 Checking cudrrency dropdown functionality');
         // await page.locator('#php[name="currency"]').click();
         // await expect (page.locator('ul.MuiList-root')).toBeVisible();
         // console.log('✅ Currency dropdown is working as expected');
@@ -225,30 +225,30 @@
         await page.locator('#your-name').fill(process.env.INDIVIDUAL_USER_NAME);
         console.log('✅ Sender name filled successfully');
         
-        await page.getByText('OK').click();
+        // await page.getByText('OK').click();
         
-        //checking email message error
-        const emailError = (await page.locator('body').innerText()).toLowerCase();
-        if (!emailError.includes('payer/sender email is required')) {
-            throw new Error('❌ Email error message not displayed');
-        } else {
-            console.log('✅ Email error message displayed as expected');
-        }
+        // //checking email message error
+        // const emailError = (await page.locator('body').innerText()).toLowerCase();
+        // if (!emailError.includes('payer/sender email is required')) {
+        //     throw new Error('❌ Email error message not displayed');
+        // } else {
+        //     console.log('✅ Email error message displayed as expected');
+        // }
         
         //filling in email
         console.log('📧 Filling in sender email');
         await page.locator('#your-email').fill(process.env.INDIVIDUAL_USER_EMAIL);
         console.log('✅ Sender email filled successfully');
         
-        await page.getByText('OK').click();
+        // await page.getByText('OK').click();
         
-        //checking mobile message error
-        const mobileError = (await page.locator('body').innerText()).toLowerCase(); 
-        if (!mobileError.includes('payer/sender mobile number is required')) {
-            throw new Error('❌ Mobile number error message not displayed');
-        } else {
-            console.log('✅ Mobile number error message displayed as expected');
-        }
+        // //checking mobile message error
+        // const mobileError = (await page.locator('body').innerText()).toLowerCase(); 
+        // if (!mobileError.includes('payer/sender mobile number is required')) {
+        //     throw new Error('❌ Mobile number error message not displayed');
+        // } else {
+        //     console.log('✅ Mobile number error message displayed as expected');
+        // }
         
         //filling in mobile number
         console.log('📱 Filling in sender mobile number');

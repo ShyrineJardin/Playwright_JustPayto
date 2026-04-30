@@ -129,7 +129,7 @@ test.describe('Shared — DOB normalisation', () => {
 
     test('strips slashes and hyphens before comparing', () => {
         expect(dobMatches('01/01/01', '010101')).toBe(true);
-        expect(dobMatches('01-01-01', '010101')).toBe(true);
+        expect(dobMatches('2001-01-01', '010101')).toBe(true);
     });
 
     test('env birthdate normalises to digits only', () => {

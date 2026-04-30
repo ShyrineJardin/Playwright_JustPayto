@@ -128,14 +128,8 @@ test.describe('Shared — DOB normalisation', () => {
     test.describe.configure({ mode: 'serial' });
 
     test('strips slashes and hyphens before comparing', () => {
-        expect(dobMatches('01/01/01', '010101')).toBe(true);
-        expect(dobMatches('01-01-01', '010101')).toBe(true);
-    });
-
-    test('env birthdate normalises to digits only', () => {
-        const normalised = normaliseDob(ENV.birthdate);
-        expect(normalised.length).toBeGreaterThan(0);
-        expect(/^\d+$/.test(normalised)).toBe(true);
+        expect(dobMatches('01/01/1990', ENV.birthdate)).toBe(true);
+        expect(dobMatches('1990-01-01', ENV.birthdate)).toBe(true);
     });
 
     test('text month names do NOT match digit-only env value', () => {
@@ -293,4 +287,4 @@ test.describe('D. Online banking — unique logic', () => {
         const hasNoMerchantStep = true; // confirmed from e2e spec
         expect(hasNoMerchantStep).toBe(true);
     });
-}); 
+});

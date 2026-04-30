@@ -46,12 +46,12 @@ import { test, expect } from '@playwright/test';
 
 const ENV = {
     // Business user fields
-    name:            process.env.BUSINESS_USER_NAME             || 'Juan Dela Cruz',
-    email:           process.env.BUSINESS_USER_EMAIL            || 'fpz.test1@gmail.com',
-    mobile:          process.env.BUSINESS_USER_MOBILE           || '9204591518',
-    deliveryAddress: process.env.BUSINESS_USER_DELIVERY_ADDRESS || '123 Katipunan Avenue, Barangay Loyola Heights',
-    merchantEmail:   process.env.BUSINESS_MERCHANT_EMAIL        || 'fpztest.sjardin@gmail.com',
-    paymentUrl:      process.env.BUSINESS_PAYMENT_URL           || 'https://dev.justpay.to/mochigallery',
+    name:            process.env.BUSINESS_USER_NAME             || 'Business User',
+    email:           process.env.BUSINESS_USER_EMAIL            || 'business@example.com',
+    mobile:          process.env.BUSINESS_USER_MOBILE           || '9171234567',
+    deliveryAddress: process.env.BUSINESS_USER_DELIVERY_ADDRESS || 'Makati City',
+    merchantEmail:   process.env.BUSINESS_MERCHANT_EMAIL        || 'merchant@example.com',
+    paymentUrl:      process.env.BUSINESS_PAYMENT_URL           || 'https://dev.justpay.to/business',
 
     // Card fields — business specs use INDIVIDUAL_CARD_* for card payments
     cardNumber:      process.env.INDIVIDUAL_CARD_NUMBER         || '4242424242424242',
